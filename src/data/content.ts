@@ -1,0 +1,7 @@
+export const provinces=`Adana,Adıyaman,Afyonkarahisar,Ağrı,Amasya,Ankara,Antalya,Artvin,Aydın,Balıkesir,Bilecik,Bingöl,Bitlis,Bolu,Burdur,Bursa,Çanakkale,Çankırı,Çorum,Denizli,Diyarbakır,Edirne,Elazığ,Erzincan,Erzurum,Eskişehir,Gaziantep,Giresun,Gümüşhane,Hakkâri,Hatay,Isparta,Mersin,İstanbul,İzmir,Kars,Kastamonu,Kayseri,Kırklareli,Kırşehir,Kocaeli,Konya,Kütahya,Malatya,Manisa,Kahramanmaraş,Mardin,Muğla,Muş,Nevşehir,Niğde,Ordu,Rize,Sakarya,Samsun,Siirt,Sinop,Sivas,Tekirdağ,Tokat,Trabzon,Tunceli,Şanlıurfa,Uşak,Van,Yozgat,Zonguldak,Aksaray,Bayburt,Karaman,Kırıkkale,Batman,Şırnak,Bartın,Ardahan,Iğdır,Yalova,Karabük,Kilis,Osmaniye,Düzce`.split(',');
+export const firstNames=['Deniz','Ece','Emir','Zeynep','Arda','Elif','Mert','İrem','Can','Duru','Bora','Selin'];
+export const surnames=['Yılmaz','Kaya','Demir','Şahin','Çelik','Aydın','Arslan','Koç','Kurt','Özdemir'];
+export const companyRoots=['MaviRota','Kuzey Işık','Pera','Anadolu Çözüm','Koru','Ada','YeniDoku','Umut','Denge','Martı','Başak','Yalın'];
+export const sectors=['Teknoloji','Perakende','Lojistik','Gıda','Enerji','Finans','Sağlık','Eğitim'];
+export const jobRoles=['Mağaza Destek Elemanı','Müşteri Temsilcisi','Yazılım Stajyeri','Muhasebe Asistanı','Operasyon Uzmanı','İçerik Editörü','Satış Danışmanı','Veri Asistanı','Teknisyen','Tasarım Asistanı'];
+export const tr={menu:{newLife:'Yeni Hayat',lives:'Hayatlarım',settings:'Ayarlar'},time:{pause:'Duraklat',next:'Sonraki önemli olay'},privacy:'Kayıtların yalnızca bu cihazda tutulur. Hesap, izleme, analiz ve oyun verisi yükleme yoktur.'};
