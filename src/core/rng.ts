@@ -1,0 +1,2 @@
+export class RNG{constructor(public state:number){this.state=state>>>0||1}next(){let t=this.state+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);this.state=(t^t>>>14)>>>0;return this.state/4294967296}int(min:number,max:number){return Math.floor(this.next()*(max-min+1))+min}pick<T>(a:T[]){return a[this.int(0,a.length-1)]}}
+export function hashSeed(s:string){let h=2166136261;for(const c of s)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0}
