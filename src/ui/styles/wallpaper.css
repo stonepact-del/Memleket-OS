@@ -1,0 +1,54 @@
+.tod-morning {
+  --sky1: #efb18b;
+  --sky2: #6f9798;
+  --city: #31595a;
+  --window: #e9bd79;
+}
+.tod-day {
+  --sky1: #a8c8c5;
+  --sky2: #5f9296;
+  --city: #315d61;
+  --window: #a7b6a7;
+}
+.tod-evening {
+  --sky1: #df8f6d;
+  --sky2: #42666f;
+  --city: #173a42;
+  --window: #ffd078;
+}
+.tod-night {
+  --sky1: #142c43;
+  --sky2: #183d4b;
+  --city: #0c252d;
+  --window: #ffc66c;
+}
+.wallpaper-coast.lock-screen {
+  --city: #214e55;
+  background: linear-gradient(
+    var(--sky1),
+    var(--sky2) 62%,
+    #47777c 63%,
+    #173d45
+  ) !important;
+}
+.wallpaper-coast .phone-home {
+  --city: #214e55;
+  background: linear-gradient(
+    var(--sky1),
+    var(--sky2) 62%,
+    #47777c 63%,
+    #173d45
+  ) !important;
+}
+.wallpaper-simple.lock-screen {
+  background: linear-gradient(160deg, var(--sky1), var(--sky2)) !important;
+}
+.wallpaper-simple .phone-home {
+  background: linear-gradient(160deg, var(--sky1), var(--sky2)) !important;
+}
+.wallpaper-simple.lock-screen:after {
+  display: none;
+}
+.wallpaper-simple .phone-home:after {
+  display: none;
+}

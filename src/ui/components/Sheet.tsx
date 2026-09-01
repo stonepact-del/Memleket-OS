@@ -1,2 +1,27 @@
-import type {ReactNode} from 'react';
-export function Sheet({label,onClose,children,className=''}:{label:string;onClose:()=>void;children:ReactNode;className?:string}){return <div className="shade sheet-shade" onClick={onClose}><section className={`sheet ${className}`} role="dialog" aria-modal="true" aria-label={label} onClick={e=>e.stopPropagation()}><i className="sheet-handle"/>{children}</section></div>}
+import type { ReactNode } from "react";
+export function Sheet({
+  label,
+  onClose,
+  children,
+  className = "",
+}: {
+  label: string;
+  onClose: () => void;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className="shade sheet-shade" onClick={onClose}>
+      <section
+        className={`sheet ${className}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label={label}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <i className="sheet-handle" />
+        {children}
+      </section>
+    </div>
+  );
+}

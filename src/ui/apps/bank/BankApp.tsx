@@ -1,2 +1,16 @@
-import type {State} from '../../../core/model';import {AppShell} from '../../os/AppShell';import {BankOverview} from './BankOverview';import {TransactionList} from './TransactionList';import './bank.css';
-export function BankApp({game}:{game:State}){return <AppShell title="CepBanka" variant="hidden"><main className="bank-native-layout" data-app-identity="bank-native"><BankOverview game={game}/><TransactionList items={game.ledger}/><p className="bank-disclaimer">Kurgusal, yerel hesap görünümü.</p></main></AppShell>}
+import type { State } from "../../../core/model";
+import { AppShell } from "../../os/AppShell";
+import { BankOverview } from "./BankOverview";
+import { TransactionList } from "./TransactionList";
+import "./bank.css";
+export function BankApp({ game }: { game: State }) {
+  return (
+    <AppShell title="CepBanka" variant="hidden">
+      <main className="bank-native-layout" data-app-identity="bank-native">
+        <BankOverview game={game} />
+        <TransactionList items={game.ledger} />
+        <p className="bank-disclaimer">Kurgusal, yerel hesap görünümü.</p>
+      </main>
+    </AppShell>
+  );
+}

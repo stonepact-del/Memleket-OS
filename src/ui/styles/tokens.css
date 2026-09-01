@@ -1,1 +1,29 @@
-:root{--type-display:clamp(3.6rem,18vw,6rem);--type-title:clamp(1.65rem,6vw,2.4rem);--type-body:1rem;--type-caption:.78rem;--type-micro:.65rem;--space-4:4px;--space-8:8px;--space-12:12px;--space-16:16px;--space-20:20px;--space-24:24px;--space-32:32px;--radius-compact:10px;--radius-control:14px;--radius-panel:22px;--radius-floating:28px;--surface-glass-light:rgba(246,243,232,.72);--surface-glass-dark:rgba(12,28,23,.66);--surface-elevated:#fff;--surface-paper:#f6f0e3;--surface-app:#f7f4ec;--motion-fast:120ms;--motion-standard:220ms;--motion-sheet:320ms;--shadow-low:0 4px 14px rgba(9,25,19,.12);--shadow-floating:0 16px 38px rgba(5,20,15,.24);--shadow-modal:0 -18px 60px rgba(0,0,0,.34)}
+:root {
+  --type-display: clamp(3.6rem, 18vw, 6rem);
+  --type-title: clamp(1.65rem, 6vw, 2.4rem);
+  --type-body: 1rem;
+  --type-caption: 0.78rem;
+  --type-micro: 0.65rem;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --radius-compact: 10px;
+  --radius-control: 14px;
+  --radius-panel: 22px;
+  --radius-floating: 28px;
+  --surface-glass-light: rgba(246, 243, 232, 0.72);
+  --surface-glass-dark: rgba(12, 28, 23, 0.66);
+  --surface-elevated: #fff;
+  --surface-paper: #f6f0e3;
+  --surface-app: #f7f4ec;
+  --motion-fast: 120ms;
+  --motion-standard: 220ms;
+  --motion-sheet: 320ms;
+  --shadow-low: 0 4px 14px rgba(9, 25, 19, 0.12);
+  --shadow-floating: 0 16px 38px rgba(5, 20, 15, 0.24);
+  --shadow-modal: 0 -18px 60px rgba(0, 0, 0, 0.34);
+}

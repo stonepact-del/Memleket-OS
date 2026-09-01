@@ -1,3 +1,52 @@
-import {ArrowDownLeft,ArrowUpRight,Bus,ShoppingBag,Wallet} from 'lucide-react';import type {Ledger} from '../../../core/model';import {date,money,time} from '../../format';import {EmptyState} from '../../components/EmptyState';
-function Glyph({item}:{item:Ledger}){if(/yolculuğu|Ulaşım/.test(item.description))return <Bus/>;if(/satın alımı/.test(item.description))return <ShoppingBag/>;return item.amount>0?<ArrowDownLeft/>:<ArrowUpRight/>}
-export function TransactionList({items}:{items:Ledger[]}){return <section className="bank-statement"><header><h2>Hesap hareketleri</h2><span>Son {Math.min(items.length,12)} hareket</span></header>{items.length===0?<EmptyState title="Henüz hesap hareketi yok." detail="Gelir ve ödemelerin burada kronolojik görünür."/>:items.slice(0,12).map(x=><article className="bank-transaction" key={x.id}><i><Glyph item={x}/></i><div><b>{x.description}</b><small>{date(x.at)} · {time(x.at)}</small></div><strong className={x.amount>0?'income':'expense'}>{x.amount>0?'+':'−'}{money(Math.abs(x.amount))}</strong><span className="sr-only"><Wallet/> İşlem sonrası {money(x.balanceAfter)}</span></article>)}</section>}
+import {
+  ArrowDownLeft,
+  ArrowUpRight,
+  Bus,
+  ShoppingBag,
+  Wallet,
+} from "lucide-react";
+import type { Ledger } from "../../../core/model";
+import { date, money, time } from "../../format";
+import { EmptyState } from "../../components/EmptyState";
+function Glyph({ item }: { item: Ledger }) {
+  if (/yolculuğu|Ulaşım/.test(item.description)) return <Bus />;
+  if (/satın alımı/.test(item.description)) return <ShoppingBag />;
+  return item.amount > 0 ? <ArrowDownLeft /> : <ArrowUpRight />;
+}
+export function TransactionList({ items }: { items: Ledger[] }) {
+  return (
+    <section className="bank-statement">
+      <header>
+        <h2>Hesap hareketleri</h2>
+        <span>Son {Math.min(items.length, 12)} hareket</span>
+      </header>
+      {items.length === 0 ? (
+        <EmptyState
+          title="Henüz hesap hareketi yok."
+          detail="Gelir ve ödemelerin burada kronolojik görünür."
+        />
+      ) : (
+        items.slice(0, 12).map((x) => (
+          <article className="bank-transaction" key={x.id}>
+            <i>
+              <Glyph item={x} />
+            </i>
+            <div>
+              <b>{x.description}</b>
+              <small>
+                {date(x.at)} · {time(x.at)}
+              </small>
+            </div>
+            <strong className={x.amount > 0 ? "income" : "expense"}>
+              {x.amount > 0 ? "+" : "−"}
+              {money(Math.abs(x.amount))}
+            </strong>
+            <span className="sr-only">
+              <Wallet /> İşlem sonrası {money(x.balanceAfter)}
+            </span>
+          </article>
+        ))
+      )}
+    </section>
+  );
+}

@@ -1,5 +1,109 @@
-import {useEffect,useState} from 'react';import type {AppId,State} from '../../core/model';import {useGame} from '../../store';import {simulationTimeOfDay} from '../wallpaper';import {appNames} from '../appMeta';import {AppIcon} from './AppIcon';import {StatusBar} from './StatusBar';import {LockScreen} from './LockScreen';import {NotificationCenter} from './NotificationCenter';import {SystemNavigation} from './SystemNavigation';import {TimeSheet} from './TimeSheet';import {HomeScreen} from './HomeScreen';import {ChatApp} from '../apps/chat/ChatApp';import {BankApp} from '../apps/bank/BankApp';import {MarketApp} from '../apps/market/MarketApp';import {LegacyApp} from '../apps/LegacyApps';
-function Brand(){return <div className="brand"><span>M</span><div><b>MemleketOS</b><small>Bir hayat. Bin ihtimal.</small></div></div>}
-function DesktopRail(){const s=useGame();return <aside className="rail"><Brand/><nav>{(Object.keys(appNames)as AppId[]).map(a=><button className={s.app===a?'active':''} key={a} onClick={()=>s.open(a)} title={appNames[a]}><AppIcon app={a} size="small"/><span>{appNames[a]}</span></button>)}</nav><button onClick={()=>s.setScreen('menu')}><span>Menü</span></button></aside>}
-function Content({game,openTime}:{game:State;openTime:()=>void}){const app=useGame(x=>x.app);if(app==='home')return <HomeScreen game={game} openTime={openTime}/>;if(app==='chat')return <ChatApp game={game}/>;if(app==='bank')return <BankApp game={game}/>;if(app==='market')return <MarketApp game={game}/>;return <LegacyApp app={app} game={game}/>}
-export function Device(){const s=useGame(),game=s.game!,[locked,setLocked]=useState(true),[center,setCenter]=useState(false),[timeOpen,setTimeOpen]=useState(false);useEffect(()=>{if(!s.notice)return;const t=setTimeout(()=>useGame.setState({notice:undefined}),2600);return()=>clearTimeout(t)},[s.notice]);if(locked)return <LockScreen game={game} unlock={()=>setLocked(false)}/>;return <main className={`device ${game.settings.largeText?'large':''} ${game.settings.reducedMotion?'reduce-motion':''} wallpaper-${game.settings.wallpaper} tod-${simulationTimeOfDay(game.now)}`}><DesktopRail/><section className="workspace"><StatusBar openCenter={()=>setCenter(true)}/><div className={`app-window app-${s.app}`}><Content game={game} openTime={()=>setTimeOpen(true)}/></div><SystemNavigation/></section>{center&&<NotificationCenter game={game} close={()=>setCenter(false)}/>} {timeOpen&&<TimeSheet game={game} close={()=>setTimeOpen(false)}/>} {s.notice&&<div role="status" className="toast success">{s.notice}<button aria-label="Bildirimi kapat" onClick={()=>useGame.setState({notice:undefined})}>×</button></div>} {s.error&&<div role="alert" className="toast">{s.error}<button aria-label="Hatayı kapat" onClick={()=>s.setError()}>×</button></div>}</main>}
+import { useEffect, useState } from "react";
+import type { AppId, State } from "../../core/model";
+import { useGame } from "../../store";
+import { simulationTimeOfDay } from "../wallpaper";
+import { appNames } from "../appMeta";
+import { AppIcon } from "./AppIcon";
+import { StatusBar } from "./StatusBar";
+import { LockScreen } from "./LockScreen";
+import { NotificationCenter } from "./NotificationCenter";
+import { SystemNavigation } from "./SystemNavigation";
+import { TimeSheet } from "./TimeSheet";
+import { HomeScreen } from "./HomeScreen";
+import { ChatApp } from "../apps/chat/ChatApp";
+import { BankApp } from "../apps/bank/BankApp";
+import { MarketApp } from "../apps/market/MarketApp";
+import { LegacyApp } from "../apps/LegacyApps";
+function Brand() {
+  return (
+    <div className="brand">
+      <span>M</span>
+      <div>
+        <b>MemleketOS</b>
+        <small>Bir hayat. Bin ihtimal.</small>
+      </div>
+    </div>
+  );
+}
+function DesktopRail() {
+  const s = useGame();
+  return (
+    <aside className="rail">
+      <Brand />
+      <nav>
+        {(Object.keys(appNames) as AppId[]).map((a) => (
+          <button
+            className={s.app === a ? "active" : ""}
+            key={a}
+            onClick={() => s.open(a)}
+            title={appNames[a]}
+          >
+            <AppIcon app={a} size="small" />
+            <span>{appNames[a]}</span>
+          </button>
+        ))}
+      </nav>
+      <button onClick={() => s.setScreen("menu")}>
+        <span>Menü</span>
+      </button>
+    </aside>
+  );
+}
+function Content({ game, openTime }: { game: State; openTime: () => void }) {
+  const app = useGame((x) => x.app);
+  if (app === "home") return <HomeScreen game={game} openTime={openTime} />;
+  if (app === "chat") return <ChatApp game={game} />;
+  if (app === "bank") return <BankApp game={game} />;
+  if (app === "market") return <MarketApp game={game} />;
+  return <LegacyApp app={app} game={game} />;
+}
+export function Device() {
+  const s = useGame(),
+    game = s.game!,
+    [locked, setLocked] = useState(true),
+    [center, setCenter] = useState(false),
+    [timeOpen, setTimeOpen] = useState(false);
+  useEffect(() => {
+    if (!s.notice) return;
+    const t = setTimeout(() => useGame.setState({ notice: undefined }), 2600);
+    return () => clearTimeout(t);
+  }, [s.notice]);
+  if (locked) return <LockScreen game={game} unlock={() => setLocked(false)} />;
+  return (
+    <main
+      className={`device ${game.settings.largeText ? "large" : ""} ${game.settings.reducedMotion ? "reduce-motion" : ""} wallpaper-${game.settings.wallpaper} tod-${simulationTimeOfDay(game.now)}`}
+    >
+      <DesktopRail />
+      <section className="workspace">
+        <StatusBar openCenter={() => setCenter(true)} />
+        <div className={`app-window app-${s.app}`}>
+          <Content game={game} openTime={() => setTimeOpen(true)} />
+        </div>
+        <SystemNavigation />
+      </section>
+      {center && (
+        <NotificationCenter game={game} close={() => setCenter(false)} />
+      )}{" "}
+      {timeOpen && <TimeSheet game={game} close={() => setTimeOpen(false)} />}{" "}
+      {s.notice && (
+        <div role="status" className="toast success">
+          {s.notice}
+          <button
+            aria-label="Bildirimi kapat"
+            onClick={() => useGame.setState({ notice: undefined })}
+          >
+            ×
+          </button>
+        </div>
+      )}{" "}
+      {s.error && (
+        <div role="alert" className="toast">
+          {s.error}
+          <button aria-label="Hatayı kapat" onClick={() => s.setError()}>
+            ×
+          </button>
+        </div>
+      )}
+    </main>
+  );
+}

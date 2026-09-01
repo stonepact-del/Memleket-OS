@@ -1,0 +1,175 @@
+.menu {
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 90% 5%, #527a67 0, transparent 35%),
+    linear-gradient(145deg, #0c2a21, #163e31 62%, #0b251d);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.form-page {
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 90% 5%, #527a67 0, transparent 35%),
+    linear-gradient(145deg, #0c2a21, #163e31 62%, #0b251d);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.menu-panel {
+  width: min(100%, 1080px);
+  min-height: min(720px, calc(100dvh - 40px));
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px, 5vw, 52px);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand > span {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 15px;
+  background: #f7f1e5;
+  color: #173b30;
+  font-size: 25px;
+  font-weight: 900;
+}
+.brand div {
+  display: flex;
+  flex-direction: column;
+}
+.brand small {
+  color: #becdc5;
+}
+.local {
+  color: #becdc5;
+}
+.menu-copy {
+  margin: auto 0;
+}
+.menu-copy p {
+  color: #c7d4cd;
+  font-size: 17px;
+}
+.form-page p {
+  color: #c7d4cd;
+  font-size: 17px;
+}
+.menu-copy h1 {
+  font-size: clamp(44px, 7vw, 82px);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  margin: 20px 0;
+}
+.form-page h1 {
+  font-size: clamp(44px, 7vw, 82px);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  margin: 20px 0;
+}
+.menu nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.menu button {
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid #ffffff1c;
+  border-radius: 15px;
+  color: inherit;
+  background: #ffffff0b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+.form-page button {
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid #ffffff1c;
+  border-radius: 15px;
+  color: inherit;
+  background: #ffffff0b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+.primary {
+  background: #f7f1e5 !important;
+  color: #173a2f !important;
+  font-weight: 800;
+}
+.local {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 22px;
+}
+.form-page section {
+  width: min(620px, 100%);
+}
+.form-page h1 {
+  font-size: clamp(40px, 10vw, 58px);
+}
+.back {
+  border: 0 !important;
+  background: none !important;
+  padding: 0 !important;
+}
+.form-page label {
+  display: block;
+  margin: 23px 0;
+  color: #d5ded9;
+  font-weight: 700;
+}
+.form-page input {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 16px;
+  border: 0;
+  border-radius: 14px;
+  color: #1a2923;
+  background: #faf6ee;
+}
+.form-page select {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 16px;
+  border: 0;
+  border-radius: 14px;
+  color: #1a2923;
+  background: #faf6ee;
+}
+.wide {
+  width: 100%;
+}
+.lives article {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 15px 0;
+  border-bottom: 1px solid #ffffff20;
+}
+.lives article div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+.lives article small {
+  color: #b5c4bc;
+}
+.lives article button {
+  padding: 8px 13px;
+}
+.danger {
+  color: #ffc0b7;
+}

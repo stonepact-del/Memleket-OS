@@ -88,3 +88,15 @@ test('save feedback, controlled invalid import and wallpaper simulation time',as
   await page.locator('input[type=file]').setInputFiles({name:'bad.json',mimeType:'application/json',buffer:Buffer.from('{"schemaVersion":2,"settings":null}')});await expect(page.getByRole('alert')).toContainText(/doğrulanamadı|geçersiz/);
   await goHome(page);await page.getByRole('button',{name:/Okulum/}).first().click();await page.getByRole('button',{name:'2 saat'}).click();await page.getByRole('button',{name:'2 saat çalış'}).first().click();await page.getByRole('button',{name:'2 saat çalış'}).first().click();await goHome(page);await expect(page.locator('.device')).toHaveClass(/tod-day/);await page.locator('.app-grid > button').filter({hasText:'Ayarlar'}).click();await page.getByRole('button',{name:'Sahil'}).click();await expect(page.locator('.device')).toHaveClass(/wallpaper-coast.*tod-day|tod-day.*wallpaper-coast/);
 });
+
+test('untouched apps preserve titled shell navigation',async({page})=>{
+  await createLife(page);await page.getByRole('button',{name:'Okulum'}).first().click();await expect(page.getByRole('heading',{name:'Okulum',exact:true})).toBeVisible();await page.getByRole('button',{name:'Ana ekrana dön'}).click();await expect(page.locator('.phone-home')).toBeVisible();await page.getByRole('button',{name:'Notlar'}).first().click();await expect(page.getByRole('heading',{name:'Notlar',exact:true})).toBeVisible();await page.getByRole('button',{name:'Ana ekrana dön'}).click();await expect(page.locator('.phone-home')).toBeVisible();
+});
+
+test('mobile chat thread returns naturally to conversation list',async({page})=>{
+  await page.setViewportSize({width:390,height:844});await createLife(page);await page.getByRole('button',{name:'Sohbet'}).first().click();await expect(page.locator('.conversation-list')).toBeVisible();await page.locator('.conversation-list>button').first().click();await expect(page.locator('.conversation')).toBeVisible();await page.getByRole('button',{name:'Konuşmalara dön'}).click();await expect(page.locator('.conversation-list')).toBeVisible();
+});
+
+test('bank remains collision-free at the narrow phone width',async({page})=>{
+  await page.setViewportSize({width:320,height:568});await createLife(page);await page.getByRole('button',{name:'CepBanka'}).first().click();await expect(page.locator('[data-app-identity="bank-native"]')).toBeVisible();const overflow=await page.locator('.bank-native-layout').evaluate(el=>el.scrollWidth-el.clientWidth);expect(overflow).toBeLessThanOrEqual(0);
+});
