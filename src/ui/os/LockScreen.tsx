@@ -1,0 +1,68 @@
+import { ChevronUp, LockKeyhole } from "lucide-react";
+import type { State } from "../../core/model";
+import { simulationTimeOfDay } from "../wallpaper";
+import { appNames } from "../appMeta";
+import { AppIcon } from "./AppIcon";
+import { date, time } from "../format";
+import { PhoneIndicators } from "./StatusBar";
+export function LockScreen({
+  game,
+  unlock,
+}: {
+  game: State;
+  unlock: () => void;
+}) {
+  const next = game.events
+    .filter((e) => !e.processed)
+    .sort((a, b) => a.at.localeCompare(b.at))[0];
+  return (
+    <main
+      className={`lock-screen wallpaper-${game.settings.wallpaper} tod-${simulationTimeOfDay(game.now)}`}
+    >
+      <div className="lock-status">
+        <span>MemleketOS</span>
+        <PhoneIndicators />
+      </div>
+      <section className="lock-clock">
+        <LockKeyhole />
+        <p>
+          {date(game.now, { weekday: "long", day: "numeric", month: "long" })}
+        </p>
+        <time>{time(game.now)}</time>
+        <small>{game.player.province} · hayat senin ritminde</small>
+      </section>
+      <section
+        className="lock-notifications"
+        aria-label="Bildirim önizlemeleri"
+      >
+        {game.notifications
+          .filter((n) => !n.read)
+          .slice(0, 2)
+          .map((n) => (
+            <article key={n.id}>
+              <AppIcon app={n.app} size="small" />
+              <div>
+                <b>{appNames[n.app]}</b>
+                <span>{n.title}</span>
+                <p>{n.body}</p>
+              </div>
+            </article>
+          ))}
+        {next && (
+          <article>
+            <AppIcon app="calendar" size="small" />
+            <div>
+              <b>Sırada</b>
+              <span>{next.title}</span>
+              <p>{date(next.at)}</p>
+            </div>
+          </article>
+        )}
+      </section>
+      <button className="unlock" onClick={unlock}>
+        <span>Telefonu aç</span>
+        <ChevronUp />
+      </button>
+    </main>
+  );
+}
