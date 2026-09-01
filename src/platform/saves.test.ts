@@ -17,8 +17,8 @@ describe('save validation and persistence', () => {
     state.schemaVersion=1;
     delete state.settings;
     const migrated=validateAndMigrate(state);
-    expect(migrated.schemaVersion).toBe(2);
-    expect(migrated.settings).toEqual({sound:true,reducedMotion:false,largeText:false});
+    expect(migrated.schemaVersion).toBe(3);
+    expect(migrated.settings).toEqual({sound:true,reducedMotion:false,largeText:false,wallpaper:'city'});
   });
 
   it('rejects malformed nested objects', () => {

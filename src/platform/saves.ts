@@ -41,6 +41,12 @@ export function validateAndMigrate(value:unknown):State {
     migrated.simulationVersion=migrated.simulationVersion || '0.9.0';
     migrated.settings=migrated.settings || {sound:true,reducedMotion:false,largeText:false};
   }
+  if (migrated.schemaVersion === 2) {
+    migrated.schemaVersion=3;
+    const settings=migrated.settings as Record<string,unknown>; settings.wallpaper='city';
+    migrated.location='Ev'; migrated.news=[];
+    for(const p of (migrated.posts as Record<string,unknown>[])) p.comments=[];
+  }
   const parsed=saveSchema.safeParse(migrated);
   if (!parsed.success) {
     const issue=parsed.error.issues[0];
