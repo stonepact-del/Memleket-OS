@@ -34,30 +34,31 @@ test('main menu contains no broken settings route',async({page})=>{
   await expect(page.getByRole('button',{name:'Ayarlar'})).toHaveCount(0);
 });
 
-for(const viewport of [{width:320,height:568},{width:360,height:800},{width:390,height:844},{width:430,height:932},{width:768,height:1024},{width:1440,height:900}]){
+for(const viewport of [{width:320,height:568},{width:360,height:800},{width:390,height:844},{width:393,height:852},{width:414,height:896},{width:430,height:932},{width:768,height:1024},{width:1440,height:900}]){
   test(`phone shell has no horizontal overflow at ${viewport.width}x${viewport.height}`,async({page})=>{
     await page.setViewportSize(viewport);
     await createLife(page);
     const dimensions=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));
     expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client);
     await expect(page.locator('.app-grid')).toBeVisible();
-    if(viewport.width<900){await expect(page.locator('.phone-dock')).toBeVisible();expect(await page.locator('.phone-dock').evaluate(el=>getComputedStyle(el).position)).toBe('fixed');}else await expect(page.locator('.phone-dock')).toBeHidden();
+    if(viewport.width<900){await expect(page.locator('.phone-dock')).toBeVisible();expect(await page.locator('.phone-dock').evaluate(el=>getComputedStyle(el).position)).toBe('fixed');const dock=await page.locator('.phone-dock').boundingBox();expect(dock?.y).toBeGreaterThan(0);expect((dock?.y||0)+(dock?.height||0)).toBeLessThanOrEqual(viewport.height);}else await expect(page.locator('.phone-dock')).toBeHidden();
     await expect(page.locator('.timebar')).toHaveCount(0);
   });
 }
 
 test('chat reply and read state persist',async({page})=>{
   await createLife(page);await page.getByRole('button',{name:'Sohbet'}).first().click();
-  await expect(page.getByText('Günaydın, okul çıkışı haber ver olur mu?')).toBeVisible();
+  await expect(page.locator('[data-app-identity="chat-native"]')).toBeVisible();
+  await expect(page.locator('.bubbles').getByText('Günaydın, okul çıkışı haber ver olur mu?')).toBeVisible();
   await page.getByLabel('Mesaj').fill('Yarınki matematik sınavından korkuyorum');await page.locator('.chat-layout form button').click();
-  await expect(page.getByText(/Kaygılanman normal|Hazırlığına güven/)).toBeVisible();
+  await expect(page.locator('.bubbles').getByText(/Kaygılanman normal|Hazırlığına güven/)).toBeVisible();
   await page.reload();await page.getByRole('button',{name:'Telefonu aç'}).click();await page.getByRole('button',{name:'Sohbet'}).first().click();
-  await expect(page.getByText('Yarınki matematik sınavından korkuyorum')).toBeVisible();
+  await expect(page.locator('.bubbles').getByText('Yarınki matematik sınavından korkuyorum')).toBeVisible();
 });
 
 test('marketplace inline offer, inspection and purchase persist',async({page})=>{
   await createLife(page);await page.getByRole('button',{name:'SarıPazar'}).first().click();await page.getByRole('button',{name:'Elektronik'}).click();const beforeTitles=await page.getByText('Çalışma masası',{exact:true}).count();await page.getByRole('button',{name:'İlanı aç'}).first().click();
-  const title=await page.locator('.content h1').innerText();await page.getByRole('button',{name:'İncele'}).click();await expect(page.getByText(/Belirgin sorun görülmedi|Yakında bakım|Yapılmadı/)).toBeVisible();
+  await expect(page.locator('[data-app-identity="market-native"]')).toBeVisible();const title=await page.locator('.market-detail h1').innerText();await page.getByRole('button',{name:'İncele'}).click();await expect(page.getByText(/Belirgin sorun görülmedi|Yakında bakım|Yapılmadı/)).toBeVisible();
   await page.getByLabel('Teklif (TL)').fill('1000');await page.getByRole('button',{name:'Teklif gönder'}).click();await expect(page.getByRole('button',{name:'Anlaşılan fiyata satın al'})).toBeVisible();
   await page.getByRole('button',{name:/fiyata satın al/}).click();await page.reload();await page.getByRole('button',{name:'Telefonu aç'}).click();await page.getByRole('button',{name:'SarıPazar'}).first().click();await page.getByRole('button',{name:'Elektronik'}).click();await expect(page.getByText(title,{exact:true})).toHaveCount(beforeTitles-1);
 });
@@ -75,6 +76,11 @@ test('feed reactions and comments persist',async({page})=>{
 
 test('paid travel updates location and ledger',async({page})=>{
   await createLife(page);await page.locator('.app-grid > button').filter({hasText:'Harita'}).click();await page.getByRole('button',{name:'Okul',exact:true}).click();await page.getByRole('button',{name:'Otobüs'}).click();await page.getByRole('button',{name:'Yola çık'}).click();await expect(page.getByText('Şu an:').locator('..')).toContainText('Okul');await goHome(page);await page.getByRole('button',{name:'CepBanka'}).first().click();await expect(page.getByText(/Okul yolculuğu/)).toBeVisible();
+});
+
+test('notification center closes and redesigned apps keep native identities',async({page})=>{
+  await createLife(page);await page.getByRole('button',{name:'Bildirim merkezini aç'}).click();await expect(page.getByRole('dialog',{name:'Bildirim merkezi'})).toBeVisible();await page.getByRole('button',{name:'Kapat'}).click();await expect(page.getByRole('dialog',{name:'Bildirim merkezi'})).toHaveCount(0);
+  await page.getByRole('button',{name:'CepBanka'}).first().click();await expect(page.locator('[data-app-identity="bank-native"]')).toBeVisible();await goHome(page);await page.getByRole('button',{name:'SarıPazar'}).first().click();await expect(page.locator('[data-app-identity="market-native"]')).toBeVisible();
 });
 
 test('save feedback, controlled invalid import and wallpaper simulation time',async({page})=>{
