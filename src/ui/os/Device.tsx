@@ -13,6 +13,9 @@ import { HomeScreen } from "./HomeScreen";
 import { ChatApp } from "../apps/chat/ChatApp";
 import { BankApp } from "../apps/bank/BankApp";
 import { MarketApp } from "../apps/market/MarketApp";
+import { SchoolApp } from "../apps/school/SchoolApp";
+import { CareerApp } from "../apps/career/CareerApp";
+import { CalendarApp } from "../apps/calendar/CalendarApp";
 import { LegacyApp } from "../apps/LegacyApps";
 function Brand() {
   return (
@@ -55,6 +58,9 @@ function Content({ game, openTime }: { game: State; openTime: () => void }) {
   if (app === "chat") return <ChatApp game={game} />;
   if (app === "bank") return <BankApp game={game} />;
   if (app === "market") return <MarketApp game={game} />;
+  if (app === "school") return <SchoolApp game={game} />;
+  if (app === "career") return <CareerApp game={game} />;
+  if (app === "calendar") return <CalendarApp game={game} />;
   return <LegacyApp app={app} game={game} />;
 }
 export function Device() {

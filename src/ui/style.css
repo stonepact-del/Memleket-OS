@@ -4,3 +4,6 @@
 @import "./styles/os.css";
 @import "./styles/wallpaper.css";
 @import "./styles/legacy.css";
+@import "./apps/school/school.css";
+@import "./apps/career/career.css";
+@import "./apps/calendar/calendar.css";

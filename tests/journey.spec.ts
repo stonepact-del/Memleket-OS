@@ -127,8 +127,9 @@ async function goHome(page:import('@playwright/test').Page){const back=page.getB
 test('new life, phone action, time, notification and reload',async({page})=>{
   await createLife(page);
   await page.getByRole('button',{name:/Okulum/}).first().click();
+  await page.getByRole('button',{name:/Matematik çalış/}).click();
   await page.getByRole('button',{name:'2 saat'}).click();
-  await page.getByRole('button',{name:'2 saat çalış'}).first().click();
+  await page.getByRole('button',{name:'Çalışmaya başla'}).click();
   if(await page.getByRole('button',{name:'Ana ekrana dön'}).isVisible()) await goHome(page); else await page.getByRole('button',{name:'Ana Ekran',exact:true}).click();
   await page.getByRole('button',{name:'Akışı yönet'}).click();
   await expect(page.getByRole('dialog',{name:'Zaman akışı'})).toBeVisible();
@@ -177,7 +178,7 @@ test('marketplace inline offer, inspection and purchase persist',async({page})=>
 });
 
 test('career interview, offer and first employment loop',async({page})=>{
-  await createLife(page);await page.locator('.app-grid > button').filter({hasText:'Kariyer'}).click();await page.getByRole('button',{name:'Başvur'}).first().click();await goHome(page);
+  await createLife(page);await page.locator('.app-grid > button').filter({hasText:'Kariyer'}).click();await page.getByRole('button',{name:/ilanını aç/}).first().click();await page.getByRole('button',{name:'Başvur'}).click();await goHome(page);
   await page.getByRole('button',{name:'Akışı yönet'}).click();await page.getByRole('button',{name:/4 gün/}).click();await page.locator('.app-grid > button').filter({hasText:'Takvim'}).click();await page.getByText(/görüşmesi/).click();await page.getByRole('button',{name:'Hazırlığını örneklerle anlat'}).click();
   await goHome(page);await page.getByRole('button',{name:'Akışı yönet'}).click();await page.getByRole('button',{name:/4 gün/}).click();await page.locator('.app-grid > button').filter({hasText:'Kariyer'}).click();await page.getByRole('button',{name:'Teklifi kabul et'}).click();
   await goHome(page);await page.locator('.app-grid > button').filter({hasText:'Harita'}).click();await expect(page.getByText('Kafe')).toBeVisible();
@@ -199,11 +200,11 @@ test('notification center closes and redesigned apps keep native identities',asy
 test('save feedback, controlled invalid import and wallpaper simulation time',async({page})=>{
   await createLife(page);await expect(page.locator('.device')).toHaveClass(/tod-morning/);await page.locator('.app-grid > button').filter({hasText:'Ayarlar'}).click();await page.getByRole('button',{name:'Sahil'}).click();await expect(page.locator('.device')).toHaveClass(/wallpaper-coast.*tod-morning|tod-morning.*wallpaper-coast/);await page.getByRole('button',{name:'Sade'}).click();await expect(page.locator('.device')).toHaveClass(/wallpaper-simple/);await page.getByRole('button',{name:'Şehir'}).click();await expect(page.locator('.device')).toHaveClass(/wallpaper-city/);const download=page.waitForEvent('download');await page.getByRole('button',{name:'JSON dışa aktar'}).click();await download;await expect(page.getByRole('status')).toContainText('dışa aktarıldı');
   await page.locator('input[type=file]').setInputFiles({name:'bad.json',mimeType:'application/json',buffer:Buffer.from('{"schemaVersion":2,"settings":null}')});await expect(page.getByRole('alert')).toContainText(/doğrulanamadı|geçersiz/);
-  await goHome(page);await page.getByRole('button',{name:/Okulum/}).first().click();await page.getByRole('button',{name:'2 saat'}).click();await page.getByRole('button',{name:'2 saat çalış'}).first().click();await page.getByRole('button',{name:'2 saat çalış'}).first().click();await goHome(page);await expect(page.locator('.device')).toHaveClass(/tod-day/);await page.locator('.app-grid > button').filter({hasText:'Ayarlar'}).click();await page.getByRole('button',{name:'Sahil'}).click();await expect(page.locator('.device')).toHaveClass(/wallpaper-coast.*tod-day|tod-day.*wallpaper-coast/);
+  await page.getByRole('button',{name:'Hatayı kapat'}).click();await goHome(page);await page.getByRole('button',{name:/Okulum/}).first().click();await page.getByRole('button',{name:/Matematik çalış/}).click();await page.getByRole('button',{name:'2 saat'}).click();await page.getByRole('button',{name:'Çalışmaya başla'}).click();await page.getByRole('button',{name:/Matematik çalış/}).click();await page.getByRole('button',{name:'2 saat'}).click();await page.getByRole('button',{name:'Çalışmaya başla'}).click();await goHome(page);await expect(page.locator('.device')).toHaveClass(/tod-day/);await page.locator('.app-grid > button').filter({hasText:'Ayarlar'}).click();await page.getByRole('button',{name:'Sahil'}).click();await expect(page.locator('.device')).toHaveClass(/wallpaper-coast.*tod-day|tod-day.*wallpaper-coast/);
 });
 
 test('untouched apps preserve titled shell navigation',async({page})=>{
-  await createLife(page);await page.getByRole('button',{name:'Okulum'}).first().click();await expect(page.getByRole('heading',{name:'Okulum',exact:true})).toBeVisible();await page.getByRole('button',{name:'Ana ekrana dön'}).click();await expect(page.locator('.phone-home')).toBeVisible();await page.getByRole('button',{name:'Notlar'}).first().click();await expect(page.getByRole('heading',{name:'Notlar',exact:true})).toBeVisible();await page.getByRole('button',{name:'Ana ekrana dön'}).click();await expect(page.locator('.phone-home')).toBeVisible();
+  await createLife(page);await page.getByRole('button',{name:'Notlar'}).first().click();await expect(page.getByRole('heading',{name:'Notlar',exact:true})).toBeVisible();await page.getByRole('button',{name:'Ana ekrana dön'}).click();await expect(page.locator('.phone-home')).toBeVisible();
 });
 
 test('mobile chat thread returns naturally to conversation list',async({page})=>{
@@ -219,4 +220,16 @@ test('mobile chat marks only a conversation whose thread was opened',async({page
 
 test('bank remains collision-free at the narrow phone width',async({page})=>{
   await page.setViewportSize({width:320,height:568});await createLife(page);await page.getByRole('button',{name:'CepBanka'}).first().click();await expect(page.locator('[data-app-identity="bank-native"]')).toBeVisible();const overflow=await page.locator('.bank-native-layout').evaluate(el=>el.scrollWidth-el.clientWidth);expect(overflow).toBeLessThanOrEqual(0);
+});
+
+test('school study sheet advances authoritative time and persists progress',async({page})=>{
+  await createLife(page);const before=await page.evaluate(async()=>{const{useGame}=await import('/src/store.ts');return {now:useGame.getState().game!.now,value:useGame.getState().game!.education.knowledge.Matematik}});await page.getByRole('button',{name:/Okulum/}).first().click();await expect(page.locator('.school-masthead p')).toContainText('SINIF · ÖĞRENCİ ALANI');await page.getByRole('button',{name:'Matematik çalış'}).click();await expect(page.getByRole('dialog',{name:'Matematik çalışma planı'})).toContainText(/Mevcut enerji/);await page.getByRole('button',{name:'2 saat'}).click();await page.getByRole('button',{name:'Çalışmaya başla'}).click();const after=await page.evaluate(async()=>{const{useGame}=await import('/src/store.ts');return {now:useGame.getState().game!.now,value:useGame.getState().game!.education.knowledge.Matematik}});expect(after.now).not.toBe(before.now);expect(after.value).toBeGreaterThan(before.value);await page.reload();await page.getByRole('button',{name:'Telefonun kilidini aç'}).click();const persisted=await page.evaluate(async()=>{const{useGame}=await import('/src/store.ts');return useGame.getState().game!.education.knowledge.Matematik});expect(persisted).toBe(after.value);
+});
+
+test('calendar month browsing is view-only and events open on simulation dates',async({page})=>{
+  await createLife(page);const now=await page.evaluate(async()=>{const{useGame}=await import('/src/store.ts');return useGame.getState().game!.now});await page.getByRole('button',{name:'Takvim'}).first().click();await expect(page.locator('[data-app-identity="calendar-native"]')).toBeVisible();await expect(page.locator('.month-grid button[aria-pressed="true"]')).toHaveAccessibleName(new RegExp(`^${Number(now.slice(8,10))} .* etkinlik$`));const month=await page.locator('.month-navigation h2').innerText();await page.getByRole('button',{name:'Sonraki ay'}).click();await expect(page.locator('.month-navigation h2')).not.toHaveText(month);const unchanged=await page.evaluate(async()=>{const{useGame}=await import('/src/store.ts');return useGame.getState().game!.now});expect(unchanged).toBe(now);await page.getByRole('button',{name:'Bugüne dön'}).click();await page.getByRole('button',{name:'Ajanda'}).click();await page.getByText('Matematik sınavı').click();await expect(page.getByRole('heading',{name:'Matematik sınavı'})).toBeVisible();await page.getByRole('button',{name:'Okulum’da aç'}).click();await expect(page.locator('[data-app-identity="school-native"]')).toBeVisible();
+});
+
+test('opening career does not clear meaningful unread application status',async({page})=>{
+  await createLife(page);await page.evaluate(async()=>{const{useGame}=await import('/src/store.ts');const game=structuredClone(useGame.getState().game!);game.applications=[{id:'app-job-0',jobId:'job-0',state:'offer',updatedAt:game.now,statusUnread:true}];useGame.setState({game});});await expect(page.locator('.app-grid').getByRole('button',{name:/Kariyer/}).locator('.badge')).toHaveText('1');await page.locator('.app-grid').getByRole('button',{name:/Kariyer/}).click();await expect(page.getByText('İş teklifi kararını bekliyor.')).toBeVisible();await page.getByRole('button',{name:'Ana ekrana dön'}).click();await expect(page.locator('.app-grid').getByRole('button',{name:/Kariyer/}).locator('.badge')).toHaveText('1');
 });

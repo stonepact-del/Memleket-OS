@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as I from "lucide-react";
 import type { AppId, State } from "../../core/model";
 import { useGame } from "../../store";
@@ -27,126 +27,6 @@ function Avatar({ n, id }: { n: string; id?: string }) {
     memories: [],
   };
   return <ContactAvatar npc={npc} />;
-}
-function School({ g }: { g: State }) {
-  const act = useGame((x) => x.study),
-    [duration, setDuration] = useState(0.5);
-  const exams = g.events.filter((e) => e.type === "exam" && !e.processed);
-  return (
-    <div className="content">
-      <div className="headline">
-        <div>
-          <p>10. SINIF</p>
-          <h1>{g.education.school}</h1>
-        </div>
-        <strong>Enerji %{g.player.energy}</strong>
-      </div>
-      <div className="pills">
-        {(
-          [
-            [0.5, "30 dk"],
-            [1, "1 saat"],
-            [2, "2 saat"],
-          ] as const
-        ).map(([v, n]) => (
-          <button
-            className={duration === v ? "active" : ""}
-            key={v}
-            onClick={() => setDuration(v)}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
-      {exams.map((e) => (
-        <Card key={e.id}>
-          <small>YAKLAŞAN SINAV · {date(e.at)}</small>
-          <b>{e.title}</b>
-        </Card>
-      ))}
-      <h3>Dersler ve çalışma</h3>
-      <div className="cards">
-        {Object.entries(g.education.knowledge).map(([k, v]) => (
-          <Card key={k}>
-            <div className="row">
-              <b>{k}</b>
-              <span>%{v}</span>
-            </div>
-            <progress value={v} max="100" />
-            <button onClick={() => act(k, duration)}>
-              {duration === 0.5 ? "30 dakika" : duration + " saat"} çalış
-            </button>
-          </Card>
-        ))}
-      </div>
-      <h3>Sonuçlar</h3>
-      <Card>
-        {g.education.mockScores.length
-          ? g.education.mockScores.map((x, i) => (
-              <span key={i}>
-                Sınav {i + 1}: {x}{" "}
-              </span>
-            ))
-          : "Henüz sonuç yok."}
-      </Card>
-    </div>
-  );
-}
-function Career({ g }: { g: State }) {
-  const apply = useGame((x) => x.apply),
-    clear = useGame((x) => x.clearCareerUnread);
-  useEffect(() => clear(), [clear]);
-  return (
-    <div className="content">
-      <div className="headline">
-        <div>
-          <p>FIRSATLAR</p>
-          <h1>{g.player.province} için ilanlar</h1>
-        </div>
-        <strong>{g.applications.length} başvuru</strong>
-      </div>
-      <div className="cards">
-        {g.jobs.map((j) => {
-          const c = g.companies.find((x) => x.id === j.companyId)!,
-            a = g.applications.find((x) => x.jobId === j.id);
-          return (
-            <Card key={j.id}>
-              <small>
-                {c.name} • {j.city}
-              </small>
-              <h3>{j.position}</h3>
-              <p>
-                {j.workType} · {j.education}
-                <br />
-                {j.skills.join(", ")}
-              </p>
-              <b>{money(j.salary)} / ay</b>
-              {a?.state === "offer" ? (
-                <>
-                  <button
-                    onClick={() => useGame.getState().offerDecision(a.id, true)}
-                  >
-                    Teklifi kabul et
-                  </button>
-                  <button
-                    onClick={() =>
-                      useGame.getState().offerDecision(a.id, false)
-                    }
-                  >
-                    Reddet
-                  </button>
-                </>
-              ) : (
-                <button disabled={!!a} onClick={() => apply(j.id)}>
-                  {a ? `Durum: ${a.state}` : "Başvur"}
-                </button>
-              )}
-            </Card>
-          );
-        })}
-      </div>
-    </div>
-  );
 }
 function Stocks({ g }: { g: State }) {
   const trade = useGame((x) => x.trade),
@@ -242,82 +122,6 @@ function Archive({ g }: { g: State }) {
               <p>{x.text}</p>
             </div>
           </article>
-        ))}
-    </div>
-  );
-}
-function Calendar({ g }: { g: State }) {
-  const s = useGame(),
-    [selected, setSelected] = useState<string>();
-  const e = g.events.find((x) => x.id === selected),
-    app =
-      e?.entityIds?.[0] &&
-      g.applications.find((a) => a.id === e.entityIds?.[0]);
-  if (e)
-    return (
-      <div className="content">
-        <button className="back" onClick={() => setSelected(undefined)}>
-          <I.ArrowLeft /> Takvim
-        </button>
-        <h1>{e.title}</h1>
-        <p>{date(e.at, { dateStyle: "full", timeStyle: "short" })}</p>
-        <Card>
-          <p>{e.details || "Takvimindeki planlı bir olay."}</p>
-          <b>
-            {e.processed
-              ? "Tamamlandı"
-              : e.requiresInput
-                ? "Kararın bekleniyor"
-                : "Planlandı"}
-          </b>
-          {e.type === "interview" &&
-            !e.processed &&
-            Date.parse(g.now) >= Date.parse(e.at) &&
-            app && (
-              <div className="interview-actions">
-                <h3>Görüşmeye katıl</h3>
-                <button onClick={() => s.attendInterview(app.id, "honest")}>
-                  Dürüst ve sakin konuş
-                </button>
-                <button onClick={() => s.attendInterview(app.id, "prepared")}>
-                  Hazırlığını örneklerle anlat
-                </button>
-                <button onClick={() => s.attendInterview(app.id, "confident")}>
-                  Kendinden emin davran
-                </button>
-                <button onClick={() => s.missInterview(app.id)}>
-                  Görüşmeye katılma
-                </button>
-              </div>
-            )}
-        </Card>
-      </div>
-    );
-  return (
-    <div className="content">
-      <h1>Yaklaşanlar</h1>
-      {g.events
-        .sort((a, b) => a.at.localeCompare(b.at))
-        .map((e) => (
-          <button
-            className={`event ${e.processed ? "done" : ""}`}
-            key={e.id}
-            onClick={() => setSelected(e.id)}
-          >
-            <time>{date(e.at, { day: "numeric", month: "short" })}</time>
-            <div>
-              <b>{e.title}</b>
-              <small>
-                {e.processed
-                  ? "Tamamlandı"
-                  : e.requiresInput
-                    ? "Karar bekliyor"
-                    : e.important
-                      ? "Önemli olay"
-                      : "Planlandı"}
-              </small>
-            </div>
-          </button>
         ))}
     </div>
   );
@@ -593,11 +397,8 @@ function MapApp({ g }: { g: State }) {
   );
 }
 function LegacyContent({ app, game }: { app: AppId; game: State }) {
-  if (app === "school") return <School g={game} />;
-  if (app === "career") return <Career g={game} />;
   if (app === "stocks") return <Stocks g={game} />;
   if (app === "archive") return <Archive g={game} />;
-  if (app === "calendar") return <Calendar g={game} />;
   if (app === "notes") return <Notes g={game} />;
   if (app === "settings") return <Settings g={game} />;
   if (app === "feed") return <Feed g={game} />;
