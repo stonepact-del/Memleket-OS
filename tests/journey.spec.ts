@@ -13,11 +13,12 @@ async function createLife(page:import('@playwright/test').Page) {
 test('new life, phone action, time, notification and reload',async({page})=>{
   await createLife(page);
   await page.getByRole('button',{name:/Okulum/}).first().click();
+  await page.getByRole('button',{name:'2 saat'}).click();
   await page.getByRole('button',{name:'2 saat çalış'}).first().click();
   if(await page.getByRole('button',{name:'Ana ekrana dön'}).isVisible()) await page.getByRole('button',{name:'Ana ekrana dön'}).click(); else await page.getByRole('button',{name:'Ana Ekran',exact:true}).click();
   await page.getByRole('button',{name:'Akışı yönet'}).click();
   await expect(page.getByRole('dialog',{name:'Zaman akışı'})).toBeVisible();
-  await page.getByRole('button',{name:/4×/}).click();
+  await page.getByRole('button',{name:/4 gün/}).click();
   await page.getByRole('button',{name:'Bildirim merkezini aç'}).click();
   await expect(page.getByText('Sınav sonucu')).toBeVisible();
   await page.reload();
