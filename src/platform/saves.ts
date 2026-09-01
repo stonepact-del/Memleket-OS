@@ -53,7 +53,7 @@ export function validateAndMigrate(value:unknown):State {
     for(const [i,m] of (messages as unknown[]).entries()){if(!m||typeof m!=='object'||Array.isArray(m))fail(`messages.${i}`);const x=m as Record<string,unknown>;x.read=x.fromPlayer===true;}
     const applications=migrated.applications;if(!Array.isArray(applications))fail('applications');
     for(const [i,a] of (applications as unknown[]).entries()){if(!a||typeof a!=='object'||Array.isArray(a))fail(`applications.${i}`);(a as Record<string,unknown>).statusUnread=false;}
-    if(migrated.employment!==undefined){if(!migrated.employment||typeof migrated.employment!=='object'||Array.isArray(migrated.employment))fail('employment');const e=migrated.employment as Record<string,unknown>;const started=e.startedAt;if(typeof started!=='string')fail('employment.startedAt');e.nextPayAt=new Date(Date.parse(started as string)+30*864e5).toISOString();}
+    if(migrated.employment!==undefined){if(!migrated.employment||typeof migrated.employment!=='object'||Array.isArray(migrated.employment))fail('employment');const e=migrated.employment as Record<string,unknown>;const started=e.startedAt;if(typeof started!=='string')fail('employment.startedAt');const startedMs=Date.parse(started as string);if(!Number.isFinite(startedMs))fail('employment.startedAt');e.nextPayAt=new Date(startedMs+30*864e5).toISOString();}
     migrated.schemaVersion=4;
   }
   const parsed=saveSchema.safeParse(migrated);
