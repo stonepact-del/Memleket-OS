@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { State } from "../../../core/model";
 import { useGame } from "../../../store";
 import { ConversationList } from "./ConversationList";
@@ -9,9 +9,6 @@ export function ChatApp({ game }: { game: State }) {
     read = useGame((x) => x.readConversation),
     [active, setActive] = useState(game.npcs[0]?.id),
     [mobileThread, setMobileThread] = useState(false);
-  useEffect(() => {
-    if (active) read(active);
-  }, [active, read]);
   const npc = game.npcs.find((x) => x.id === active);
   return (
     <div

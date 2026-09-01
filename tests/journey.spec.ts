@@ -97,6 +97,13 @@ test('mobile chat thread returns naturally to conversation list',async({page})=>
   await page.setViewportSize({width:390,height:844});await createLife(page);await page.getByRole('button',{name:'Sohbet'}).first().click();await expect(page.locator('.conversation-list')).toBeVisible();await page.locator('.conversation-list>button').first().click();await expect(page.locator('.conversation')).toBeVisible();await page.getByRole('button',{name:'Konuşmalara dön'}).click();await expect(page.locator('.conversation-list')).toBeVisible();
 });
 
+test('mobile chat marks only a conversation whose thread was opened',async({page})=>{
+  await page.setViewportSize({width:390,height:844});await createLife(page);await page.evaluate(async()=>{const{useGame}=await import('/src/store.ts');const current=useGame.getState(),game=structuredClone(current.game!);game.messages.push({id:'unread-second-conversation',npcId:game.npcs[1].id,at:game.now,text:'Akşam görüşür müyüz?',fromPlayer:false,read:false});useGame.setState({game});await useGame.getState().save()});await expect(page.locator('.phone-dock').getByRole('button',{name:'Sohbet'}).locator('.badge')).toHaveText('2');
+  await page.locator('.phone-dock').getByRole('button',{name:'Sohbet'}).click();const rows=page.locator('.conversation-list>button');await expect(page.locator('.conversation-list>button>i')).toHaveCount(2);await expect(rows.nth(0).locator('i')).toHaveText('1');await expect(rows.nth(1).locator('i')).toHaveText('1');
+  await rows.nth(0).click();await page.getByRole('button',{name:'Konuşmalara dön'}).click();await expect(rows.nth(0).locator('i')).toHaveCount(0);await expect(rows.nth(1).locator('i')).toHaveText('1');
+  await page.reload();await page.getByRole('button',{name:'Telefonu aç'}).click();await expect(page.locator('.phone-dock').getByRole('button',{name:'Sohbet'}).locator('.badge')).toHaveText('1');await page.locator('.phone-dock').getByRole('button',{name:'Sohbet'}).click();await expect(rows.nth(0).locator('i')).toHaveCount(0);await expect(rows.nth(1).locator('i')).toHaveText('1');
+});
+
 test('bank remains collision-free at the narrow phone width',async({page})=>{
   await page.setViewportSize({width:320,height:568});await createLife(page);await page.getByRole('button',{name:'CepBanka'}).first().click();await expect(page.locator('[data-app-identity="bank-native"]')).toBeVisible();const overflow=await page.locator('.bank-native-layout').evaluate(el=>el.scrollWidth-el.clientWidth);expect(overflow).toBeLessThanOrEqual(0);
 });
