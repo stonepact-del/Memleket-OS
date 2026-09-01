@@ -1,12 +1,125 @@
 import { expect, test } from '@playwright/test';
 
+
+const requiredMobileViewports = [
+  { width: 320, height: 568 },
+  { width: 360, height: 800 },
+  { width: 390, height: 844 },
+  { width: 393, height: 852 },
+  { width: 414, height: 896 },
+  { width: 430, height: 932 },
+];
+
+async function expectUsefulBox(page: import('@playwright/test').Page, selector: string) {
+  const box = await page.locator(selector).boundingBox();
+  expect(box, `${selector} should have a visible bounding box`).not.toBeNull();
+  expect(box!.width, `${selector} should have useful width`).toBeGreaterThan(40);
+  expect(box!.height, `${selector} should have useful height`).toBeGreaterThan(40);
+  const viewport = page.viewportSize()!;
+  expect(box!.x).toBeGreaterThanOrEqual(0);
+  expect(box!.y).toBeGreaterThanOrEqual(0);
+  expect(box!.x + box!.width).toBeLessThanOrEqual(viewport.width + 1);
+  expect(box!.y + box!.height).toBeLessThanOrEqual(viewport.height + 1);
+}
+
+async function expectVisibleIntersection(page: import('@playwright/test').Page, selector: string) {
+  const box = await page.locator(selector).boundingBox();
+  expect(box, `${selector} should have a visible bounding box`).not.toBeNull();
+  const viewport = page.viewportSize()!;
+  const visibleWidth = Math.min(box!.x + box!.width, viewport.width) - Math.max(box!.x, 0);
+  const visibleHeight = Math.min(box!.y + box!.height, viewport.height) - Math.max(box!.y, 0);
+  expect(visibleWidth).toBeGreaterThan(40);
+  expect(visibleHeight).toBeGreaterThan(40);
+}
+
+async function startLifeAtLock(page: import('@playwright/test').Page) {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Yeni Hayat' }).click();
+  await page.getByLabel('Karakter adı').fill('Deniz Kaya');
+  await page.getByRole('button', { name: 'Hayatı başlat' }).click();
+  await expect(page.locator('.lock-screen')).toBeVisible();
+}
+
+async function swipeUp(page: import('@playwright/test').Page, distance = 150) {
+  const lock = page.locator('.lock-screen');
+  const box = await lock.boundingBox();
+  expect(box).not.toBeNull();
+  const x = box!.x + box!.width / 2;
+  const startY = box!.y + box!.height * 0.72;
+  await page.mouse.move(x, startY);
+  await page.mouse.down();
+  await page.mouse.move(x, startY - distance, { steps: 6 });
+  await page.mouse.up();
+}
+
+for (const viewport of requiredMobileViewports) {
+  test(`mobile OS remains visible through lock, home and app at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await startLifeAtLock(page);
+    await expectUsefulBox(page, '.lock-screen');
+    await swipeUp(page);
+    await expect(page.locator('.phone-home')).toBeVisible();
+    await expectUsefulBox(page, '.device');
+    await expectUsefulBox(page, '.workspace');
+    await expectUsefulBox(page, '.app-window');
+    await expectUsefulBox(page, '.phone-home');
+    await expectVisibleIntersection(page, '.app-grid');
+    await expectUsefulBox(page, '.phone-dock');
+    await expect(page.locator('.rail')).toBeHidden();
+    await page.getByRole('button', { name: 'Okulum' }).first().click();
+    await expectUsefulBox(page, '.native-app-body');
+    await expectUsefulBox(page, '.system-nav');
+    await page.getByRole('button', { name: 'Ana ekrana dön' }).click();
+    await expect(page.locator('.phone-home')).toBeVisible();
+  });
+}
+
+test('phone shell survives browser viewport height changes after unlock', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await startLifeAtLock(page);
+  await swipeUp(page);
+  await page.setViewportSize({ width: 390, height: 700 });
+  await expectUsefulBox(page, '.device');
+  await expectUsefulBox(page, '.workspace');
+  await expectUsefulBox(page, '.app-window');
+  await expectUsefulBox(page, '.phone-dock');
+  await page.getByRole('button', { name: 'Okulum' }).first().click();
+  await expectUsefulBox(page, '.native-app-body');
+});
+
+test('a short upward lock-screen drag returns to locked state', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await startLifeAtLock(page);
+  await swipeUp(page, 30);
+  await expect(page.locator('.lock-screen')).toBeVisible();
+  await expect(page.locator('.phone-home')).toHaveCount(0);
+  await expect(page.locator('.lock-surface')).toHaveAttribute('data-unlock-ready', 'false');
+});
+
+test('accessible unlock affordance supports click and keyboard', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await startLifeAtLock(page);
+  const unlock = page.getByRole('button', { name: 'Telefonun kilidini aç' });
+  await unlock.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.phone-home')).toBeVisible();
+});
+
+test('swipe unlock remains functional with reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await startLifeAtLock(page);
+  await swipeUp(page);
+  await expect(page.locator('.phone-home')).toBeVisible();
+});
+
 async function createLife(page:import('@playwright/test').Page) {
   await page.goto('/');
   await page.getByRole('button',{name:'Yeni Hayat'}).click();
   await page.getByLabel('Karakter adı').fill('Deniz Kaya');
   await page.getByRole('button',{name:'Hayatı başlat'}).click();
-  await expect(page.getByText('Telefonu aç')).toBeVisible();
-  await page.getByRole('button',{name:'Telefonu aç'}).click();
+  await expect(page.getByRole('button',{name:'Telefonun kilidini aç'})).toBeVisible();
+  await page.getByRole('button',{name:'Telefonun kilidini aç'}).click();
   await expect(page.locator('.phone-home')).toBeVisible();
 }
 async function goHome(page:import('@playwright/test').Page){const back=page.getByRole('button',{name:'Ana ekrana dön'});if(await back.isVisible())await back.click();else await page.getByRole('button',{name:'Ana Ekran',exact:true}).click();}
@@ -23,7 +136,7 @@ test('new life, phone action, time, notification and reload',async({page})=>{
   await page.getByRole('button',{name:'Bildirim merkezini aç'}).click();
   await expect(page.getByText('Sınav sonucu')).toBeVisible();
   await page.reload();
-  await page.getByRole('button',{name:'Telefonu aç'}).click();
+  await page.getByRole('button',{name:'Telefonun kilidini aç'}).click();
   await expect(page.locator('.phone-home')).toBeVisible();
 });
 
@@ -52,7 +165,7 @@ test('chat reply and read state persist',async({page})=>{
   await expect(page.locator('.bubbles').getByText('Günaydın, okul çıkışı haber ver olur mu?')).toBeVisible();
   await page.getByLabel('Mesaj').fill('Yarınki matematik sınavından korkuyorum');await page.locator('.chat-layout form button').click();
   await expect(page.locator('.bubbles').getByText(/Kaygılanman normal|Hazırlığına güven/)).toBeVisible();
-  await page.reload();await page.getByRole('button',{name:'Telefonu aç'}).click();await page.getByRole('button',{name:'Sohbet'}).first().click();
+  await page.reload();await page.getByRole('button',{name:'Telefonun kilidini aç'}).click();await page.getByRole('button',{name:'Sohbet'}).first().click();
   await expect(page.locator('.bubbles').getByText('Yarınki matematik sınavından korkuyorum')).toBeVisible();
 });
 
@@ -60,7 +173,7 @@ test('marketplace inline offer, inspection and purchase persist',async({page})=>
   await createLife(page);await page.getByRole('button',{name:'SarıPazar'}).first().click();await page.getByRole('button',{name:'Elektronik'}).click();const beforeTitles=await page.getByText('Çalışma masası',{exact:true}).count();await page.getByRole('button',{name:'İlanı aç'}).first().click();
   await expect(page.locator('[data-app-identity="market-native"]')).toBeVisible();const title=await page.locator('.market-detail h1').innerText();await page.getByRole('button',{name:'İncele'}).click();await expect(page.getByText(/Belirgin sorun görülmedi|Yakında bakım|Yapılmadı/)).toBeVisible();
   await page.getByLabel('Teklif (TL)').fill('1000');await page.getByRole('button',{name:'Teklif gönder'}).click();await expect(page.getByRole('button',{name:'Anlaşılan fiyata satın al'})).toBeVisible();
-  await page.getByRole('button',{name:/fiyata satın al/}).click();await page.reload();await page.getByRole('button',{name:'Telefonu aç'}).click();await page.getByRole('button',{name:'SarıPazar'}).first().click();await page.getByRole('button',{name:'Elektronik'}).click();await expect(page.getByText(title,{exact:true})).toHaveCount(beforeTitles-1);
+  await page.getByRole('button',{name:/fiyata satın al/}).click();await page.reload();await page.getByRole('button',{name:'Telefonun kilidini aç'}).click();await page.getByRole('button',{name:'SarıPazar'}).first().click();await page.getByRole('button',{name:'Elektronik'}).click();await expect(page.getByText(title,{exact:true})).toHaveCount(beforeTitles-1);
 });
 
 test('career interview, offer and first employment loop',async({page})=>{
@@ -71,7 +184,7 @@ test('career interview, offer and first employment loop',async({page})=>{
 });
 
 test('feed reactions and comments persist',async({page})=>{
-  await createLife(page);await page.locator('.app-grid > button').filter({hasText:'Akış'}).click();await page.getByRole('button',{name:'Beğen'}).first().click();await page.getByText(/yorum/).first().click();await page.getByLabel('Yorum').fill('Kolay gelsin!');await page.getByRole('button',{name:'Yaz'}).click();await page.reload();await page.getByRole('button',{name:'Telefonu aç'}).click();await page.locator('.app-grid > button').filter({hasText:'Akış'}).click();await page.getByText(/yorum/).first().click();await expect(page.getByText('Kolay gelsin!')).toBeVisible();await expect(page.getByRole('button',{name:'Beğeniyi kaldır'})).toBeVisible();
+  await createLife(page);await page.locator('.app-grid > button').filter({hasText:'Akış'}).click();await page.getByRole('button',{name:'Beğen'}).first().click();await page.getByText(/yorum/).first().click();await page.getByLabel('Yorum').fill('Kolay gelsin!');await page.getByRole('button',{name:'Yaz'}).click();await page.reload();await page.getByRole('button',{name:'Telefonun kilidini aç'}).click();await page.locator('.app-grid > button').filter({hasText:'Akış'}).click();await page.getByText(/yorum/).first().click();await expect(page.getByText('Kolay gelsin!')).toBeVisible();await expect(page.getByRole('button',{name:'Beğeniyi kaldır'})).toBeVisible();
 });
 
 test('paid travel updates location and ledger',async({page})=>{
@@ -101,7 +214,7 @@ test('mobile chat marks only a conversation whose thread was opened',async({page
   await page.setViewportSize({width:390,height:844});await createLife(page);await page.evaluate(async()=>{const{useGame}=await import('/src/store.ts');const current=useGame.getState(),game=structuredClone(current.game!);game.messages.push({id:'unread-second-conversation',npcId:game.npcs[1].id,at:game.now,text:'Akşam görüşür müyüz?',fromPlayer:false,read:false});useGame.setState({game});await useGame.getState().save()});await expect(page.locator('.phone-dock').getByRole('button',{name:'Sohbet'}).locator('.badge')).toHaveText('2');
   await page.locator('.phone-dock').getByRole('button',{name:'Sohbet'}).click();const rows=page.locator('.conversation-list>button');await expect(page.locator('.conversation-list>button>i')).toHaveCount(2);await expect(rows.nth(0).locator('i')).toHaveText('1');await expect(rows.nth(1).locator('i')).toHaveText('1');
   await rows.nth(0).click();await page.getByRole('button',{name:'Konuşmalara dön'}).click();await expect(rows.nth(0).locator('i')).toHaveCount(0);await expect(rows.nth(1).locator('i')).toHaveText('1');
-  await page.reload();await page.getByRole('button',{name:'Telefonu aç'}).click();await expect(page.locator('.phone-dock').getByRole('button',{name:'Sohbet'}).locator('.badge')).toHaveText('1');await page.locator('.phone-dock').getByRole('button',{name:'Sohbet'}).click();await expect(rows.nth(0).locator('i')).toHaveCount(0);await expect(rows.nth(1).locator('i')).toHaveText('1');
+  await page.reload();await page.getByRole('button',{name:'Telefonun kilidini aç'}).click();await expect(page.locator('.phone-dock').getByRole('button',{name:'Sohbet'}).locator('.badge')).toHaveText('1');await page.locator('.phone-dock').getByRole('button',{name:'Sohbet'}).click();await expect(rows.nth(0).locator('i')).toHaveCount(0);await expect(rows.nth(1).locator('i')).toHaveText('1');
 });
 
 test('bank remains collision-free at the narrow phone width',async({page})=>{
