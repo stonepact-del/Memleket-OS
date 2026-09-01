@@ -297,32 +297,6 @@
   font-size: 17px;
   margin: 5px 0;
 }
-.event {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--line);
-}
-.event time {
-  width: 58px;
-  padding: 8px;
-  text-align: center;
-  border-radius: 12px;
-  background: #e0ebe4;
-  color: #34624f;
-  font-weight: 800;
-}
-.event div {
-  display: flex;
-  flex-direction: column;
-}
-.event small {
-  color: #78857e;
-}
-.event.done {
-  opacity: 0.5;
-}
 .notes {
   background: #f2e9cd;
 }
@@ -560,17 +534,6 @@
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 8px;
-}
-.event {
-  width: 100%;
-  border: 0;
-  background: none;
-  text-align: left;
-}
-.interview-actions {
-  display: grid;
-  gap: 7px;
-  margin-top: 12px;
 }
 .price-chart {
   width: 100%;
