@@ -18,3 +18,7 @@ Oyun React/Vite arayüzü kullanır; saf TypeScript simülasyonu React, DOM ve d
 ## Gizlilik ve platform
 
 Hesap, sunucu, analitik, reklam, izleme, gerçek konum veya oyun verisi yüklemesi yoktur. Kurulabilir PWA çevrimdışı çalışır. Gelecekte Capacitor adaptörü, simülasyonu değiştirmeden aynı repository ve platform sınırlarına eklenebilir.
+
+## Repository knowledge
+
+Future contributors should begin with [`AGENTS.md`](./AGENTS.md). Stable product truth, design direction, current/target architecture, persistence guarantees, Türkiye ruleset policy, roadmap, and audited technical debt live under [`docs/`](./docs/) as linked from that map. Those documents deliberately distinguish current behaviour from future plans.
