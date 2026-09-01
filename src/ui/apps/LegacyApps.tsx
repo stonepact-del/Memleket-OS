@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as I from "lucide-react";
 import type { AppId, State } from "../../core/model";
 import { useGame } from "../../store";
@@ -332,11 +332,13 @@ function News({ g }: { g: State }) {
 }
 function MapApp({ g }: { g: State }) {
   const s = useGame(),
-    [dest, setDest] = useState(""),
+    target = s.navigationTarget?.app === "map" ? s.navigationTarget : undefined,
+    [dest, setDest] = useState(() => target?.place ?? ""),
     [mode, setMode] = useState("Yürü"),
     job = g.employment && g.jobs.find((j) => j.id === g.employment?.jobId),
     company = job && g.companies.find((c) => c.id === job.companyId),
     interview = g.events.find((e) => e.type === "interview" && !e.processed);
+  useEffect(() => useGame.getState().clearNavigationTarget(), []);
   const base = [
       ["Ev", I.House],
       ["Okul", I.GraduationCap],
