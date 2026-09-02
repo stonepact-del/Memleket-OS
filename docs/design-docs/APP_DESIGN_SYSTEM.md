@@ -26,6 +26,14 @@ All apps inherit the fictional OS's typography scale, spacing rhythm, accessibil
 
 Hayat Arşivi should read as a chronological personal record rather than a metrics dashboard. Home should prioritize glanceable widgets, app discovery, badges, and the fixed dock rather than duplicating every app's detail.
 
+## Release-quality visual rules
+
+- **Material hierarchy:** reserve translucent blur for OS chrome, overlays, the dock, and selected widgets. App content uses task-appropriate opaque material: paper for reading and notes, ink for finance, and warm map/news surfaces.
+- **Type roles:** status and metadata stay compact; app titles establish identity without dominating the viewport; balances and market quotes use tabular figures; editorial and memory surfaces may use the local system serif stack.
+- **Procedural assets:** home icons, avatars, company marks, listing scenes, charts, map geometry, wallpaper art, and archive glyphs must remain deterministic, lightweight, local SVG/CSS. They must not consume gameplay randomness or require network assets.
+- **Responsive quality:** 390×844 is the primary composition, 320×568 is the minimum usability gate, and 430×932 must retain intentional density. Desktop reuses the same app implementation in a focused workspace and adopts split/list-detail arrangements where the task benefits.
+- **Interaction quality:** controls use visible focus, truthful labels, comfortable touch targets, safe-area clearance, and restrained transitions. Reduced-motion and large-text settings must preserve navigation and content access.
+
 ## Future app directions
 
 - **Memleket Kapısı:** service portal with eligibility/status journeys; never imply simulated rules are official.

@@ -211,8 +211,8 @@ test('save feedback, controlled invalid import and wallpaper simulation time',as
   await page.getByRole('button',{name:'Hatayı kapat'}).click();await goHome(page);await page.getByRole('button',{name:/Okulum/}).first().click();await page.getByRole('button',{name:/Matematik çalış/}).click();await page.getByRole('button',{name:'2 saat'}).click();await page.getByRole('button',{name:'Çalışmaya başla'}).click();await page.getByRole('button',{name:/Matematik çalış/}).click();await page.getByRole('button',{name:'2 saat'}).click();await page.getByRole('button',{name:'Çalışmaya başla'}).click();await goHome(page);await expect(page.locator('.device')).toHaveClass(/tod-day/);await page.locator('.app-grid > button').filter({hasText:'Ayarlar'}).click();await page.getByRole('button',{name:'Sahil'}).click();await expect(page.locator('.device')).toHaveClass(/wallpaper-coast.*tod-day|tod-day.*wallpaper-coast/);
 });
 
-test('untouched apps preserve titled shell navigation',async({page})=>{
-  await createLife(page);await page.getByRole('button',{name:'Notlar'}).first().click();await expect(page.getByRole('heading',{name:'Notlar',exact:true})).toBeVisible();await page.getByRole('button',{name:'Ana ekrana dön'}).click();await expect(page.locator('.phone-home')).toBeVisible();
+test('native notes preserves notebook navigation',async({page})=>{
+  await createLife(page);await page.getByRole('button',{name:'Notlar'}).first().click();await expect(page.locator('[data-app-identity="notes-native"]')).toBeVisible();await page.getByRole('button',{name:'Ana ekrana dön'}).click();await expect(page.locator('.phone-home')).toBeVisible();
 });
 
 test('mobile chat thread returns naturally to conversation list',async({page})=>{
