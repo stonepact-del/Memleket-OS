@@ -6,28 +6,9 @@ import { tr } from "../../data/content";
 import { date, money } from "../format";
 import { appNames } from "../appMeta";
 import { AppShell } from "../os/AppShell";
-import { ContactAvatar } from "./chat/ContactAvatar";
 const Card = ({ children }: { children: React.ReactNode }) => (
   <article className="card">{children}</article>
 );
-function Avatar({ n, id }: { n: string; id?: string }) {
-  const npc = {
-    id: id || n,
-    name: n,
-    age: 0,
-    role: "",
-    personality: "",
-    education: "",
-    occupation: "",
-    income: 0,
-    goal: "",
-    lifeStage: "",
-    closeness: "relevant" as const,
-    relationship: { familiarity: 0, warmth: 0, trust: 0, tension: 0 },
-    memories: [],
-  };
-  return <ContactAvatar npc={npc} />;
-}
 function Stocks({ g }: { g: State }) {
   const trade = useGame((x) => x.trade),
     [selected, setSelected] = useState<string>();
@@ -208,128 +189,6 @@ function Settings({ g }: { g: State }) {
     </div>
   );
 }
-function Feed({ g }: { g: State }) {
-  const s = useGame();
-  return (
-    <div className="content feed">
-      {g.posts.map((p) => {
-        const n = g.npcs.find((x) => x.id === p.npcId)!;
-        return (
-          <Card key={p.id}>
-            <header>
-              <Avatar n={n.name} />
-              <div>
-                <b>{n.name}</b>
-                <small>{date(p.at)}</small>
-              </div>
-            </header>
-            <p>{p.text}</p>
-            <button
-              aria-label={p.liked ? "Beğeniyi kaldır" : "Beğen"}
-              onClick={() => s.like(p.id)}
-            >
-              <I.Heart fill={p.liked ? "currentColor" : "none"} /> {p.likes}
-            </button>
-            <details>
-              <summary>{p.comments.length} yorum</summary>
-              {p.comments.map((c) => (
-                <p key={c.id}>
-                  <b>{c.authorId === "player" ? "Sen" : "Yakın çevre"}:</b>{" "}
-                  {c.text}
-                </p>
-              ))}
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const f = new FormData(e.currentTarget),
-                    v = String(f.get("comment") || "");
-                  s.comment(p.id, v);
-                  e.currentTarget.reset();
-                }}
-              >
-                <input name="comment" aria-label="Yorum" />
-                <button>Yaz</button>
-              </form>
-            </details>
-          </Card>
-        );
-      })}
-    </div>
-  );
-}
-function Mail({ g }: { g: State }) {
-  const s = useGame(),
-    [open, setOpen] = useState<string>();
-  const active = g.mails.find((m) => m.id === open);
-  if (active)
-    return (
-      <div className="content">
-        <button className="back" onClick={() => setOpen(undefined)}>
-          <I.ArrowLeft /> Gelen kutusu
-        </button>
-        <h1>{active.subject}</h1>
-        <small>
-          {active.sender} · {date(active.at)}
-        </small>
-        <p>{active.body}</p>
-        {active.app && (
-          <button onClick={() => s.open(active.app!)}>
-            İlgili uygulamayı aç
-          </button>
-        )}
-      </div>
-    );
-  return (
-    <div className="content">
-      <h1>Gelen kutusu</h1>
-      {g.mails.map((m) => (
-        <button
-          className={`mail ${m.read ? "read" : ""}`}
-          key={m.id}
-          onClick={() => {
-            s.readMail(m.id);
-            setOpen(m.id);
-          }}
-        >
-          <I.Mail />
-          <div>
-            <b>{m.sender}</b>
-            <strong>{m.subject}</strong>
-            <p>{m.body}</p>
-          </div>
-          <small>{date(m.at)}</small>
-        </button>
-      ))}
-    </div>
-  );
-}
-function News({ g }: { g: State }) {
-  return (
-    <div className="content">
-      <p className="fiction">
-        Kurgusal haber · Gerçek kişi, şirket veya veri içermez.
-      </p>
-      {g.news.length ? (
-        g.news.map((n) => (
-          <Card key={n.id}>
-            <small>
-              {n.category} · {date(n.at)}
-            </small>
-            <h3>{n.title}</h3>
-            <p>{n.body}</p>
-          </Card>
-        ))
-      ) : (
-        <Card>
-          <h3>Dünya henüz sakin</h3>
-          <p>
-            Zaman ilerledikçe şirket, okul ve şehir gelişmeleri burada oluşur.
-          </p>
-        </Card>
-      )}
-    </div>
-  );
-}
 function MapApp({ g }: { g: State }) {
   const s = useGame(),
     target = s.navigationTarget?.app === "map" ? s.navigationTarget : undefined,
@@ -403,9 +262,6 @@ function LegacyContent({ app, game }: { app: AppId; game: State }) {
   if (app === "archive") return <Archive g={game} />;
   if (app === "notes") return <Notes g={game} />;
   if (app === "settings") return <Settings g={game} />;
-  if (app === "feed") return <Feed g={game} />;
-  if (app === "mail") return <Mail g={game} />;
-  if (app === "news") return <News g={game} />;
   if (app === "map") return <MapApp g={game} />;
   return null;
 }
