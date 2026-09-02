@@ -328,47 +328,6 @@
 .setting b {
   color: #39715a;
 }
-.feed {
-  max-width: 720px;
-}
-.feed .card {
-  padding: 18px 2px;
-}
-.feed .card header {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.feed .card header div {
-  display: flex;
-  flex-direction: column;
-}
-.feed .card button {
-  background: none;
-  color: #496258;
-  padding: 0 10px;
-}
-.mail {
-  display: flex;
-  gap: 12px;
-  padding: 15px 1px;
-  border-bottom: 1px solid var(--line);
-}
-.mail > svg {
-  color: #4c7965;
-}
-.mail div {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-}
-.mail p {
-  margin: 3px 0;
-  color: #6f7d75;
-}
-.mail > small {
-  color: #7b8780;
-}
 .map-canvas {
   height: 430px;
   position: relative;
@@ -489,16 +448,6 @@
     overflow-wrap: anywhere;
   }
 }
-.feed-action {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-right: 18px;
-  color: #496258;
-}
-.feed-action svg {
-  width: 18px;
-}
 .import-button {
   display: inline-flex;
   margin: 8px;
@@ -510,30 +459,6 @@
 }
 .import-button input {
   display: none;
-}
-.mail {
-  width: 100%;
-  border: 0;
-  background: none;
-  text-align: left;
-}
-.mail.read {
-  opacity: 0.62;
-}
-.feed details summary {
-  cursor: pointer;
-  padding: 10px;
-}
-.feed form {
-  display: flex;
-  gap: 6px;
-}
-.feed form input {
-  flex: 1;
-  min-height: 42px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 8px;
 }
 .price-chart {
   width: 100%;

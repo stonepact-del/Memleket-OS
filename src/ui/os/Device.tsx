@@ -16,6 +16,9 @@ import { MarketApp } from "../apps/market/MarketApp";
 import { SchoolApp } from "../apps/school/SchoolApp";
 import { CareerApp } from "../apps/career/CareerApp";
 import { CalendarApp } from "../apps/calendar/CalendarApp";
+import { FeedApp } from "../apps/feed/FeedApp";
+import { MailApp } from "../apps/mail/MailApp";
+import { NewsApp } from "../apps/news/NewsApp";
 import { LegacyApp } from "../apps/LegacyApps";
 function Brand() {
   return (
@@ -61,6 +64,9 @@ function Content({ game, openTime }: { game: State; openTime: () => void }) {
   if (app === "school") return <SchoolApp game={game} />;
   if (app === "career") return <CareerApp game={game} />;
   if (app === "calendar") return <CalendarApp game={game} />;
+  if (app === "feed") return <FeedApp game={game} />;
+  if (app === "mail") return <MailApp game={game} />;
+  if (app === "news") return <NewsApp game={game} />;
   return <LegacyApp app={app} game={game} />;
 }
 export function Device() {
