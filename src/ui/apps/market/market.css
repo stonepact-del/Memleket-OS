@@ -315,3 +315,5 @@
 .market-detail-copy > p {
   color: #6d6354;
 }
+/* Richer local bazaar composition */
+.market-native-layout{background:radial-gradient(circle at 90% 0,#efc34d35,transparent 28%),#f4ecdc}.market-header{position:sticky;top:0;z-index:4;background:linear-gradient(120deg,#f1cc55,#e7b93b);box-shadow:0 5px 20px #523d161f}.market-header:after{content:"YAKININDAKİ İLANLAR · YEREL PAZAR";display:block;margin-top:9px;font-size:8px;letter-spacing:.13em;color:#5b491b}.listing-grid{gap:12px!important;padding:16px!important}.listing-card{background:#fffaf0!important;box-shadow:0 8px 22px #4b371d18;border:1px solid #fff!important;transition:translate .16s,box-shadow .16s}.listing-card:hover{translate:0 -2px;box-shadow:0 13px 28px #4b371d25}.listing-thumbnail{min-height:135px!important;box-shadow:inset 0 -20px 30px #3e2f1610}.market-detail{background:linear-gradient(180deg,#f7ecd5,#f4eee3)}.market-detail-panel{box-shadow:0 14px 36px #4d371c20!important}

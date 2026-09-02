@@ -1,4 +1,5 @@
-import { ChevronRight, Clock3 } from "lucide-react";
+import { BatteryMedium, ChevronRight, Clock3, MapPin, Sparkles } from "lucide-react";
+import type { CSSProperties } from "react";
 import type { AppId, State } from "../../core/model";
 import { useGame } from "../../store";
 import { appNames } from "../appMeta";
@@ -51,10 +52,15 @@ export function HomeScreen({
   return (
     <div className="phone-home">
       <header className="home-greeting">
-        <small>{date(game.now, { weekday: "long" })}</small>
-        <strong>Merhaba, {game.player.name.split(" ")[0]}</strong>
-        <span>{game.player.province}</span>
+        <div className="home-date"><span>{date(game.now, { weekday: "long", day: "numeric", month: "long" })}</span><b>{game.education.stage === "highSchool" ? `${game.education.grade}. sınıf` : game.education.stage === "university" ? "Üniversite" : "Hayat akışı"}</b></div>
+        <strong>Merhaba, {game.player.name.split(" ")[0]}.</strong>
+        <span><MapPin /> {game.player.province} · {game.location}</span>
       </header>
+      <section className="life-ribbon" aria-label="Günlük durum">
+        <div><Sparkles/><span><small>RUH HALİ</small><b>%{game.player.mood}</b></span></div>
+        <div><BatteryMedium/><span><small>ENERJİ</small><b>%{game.player.energy}</b></span></div>
+        <i style={{"--mood":`${game.player.mood}%`,"--energy":`${game.player.energy}%`} as CSSProperties}/>
+      </section>
       <section className="context-widget" aria-label="Sıradaki önemli olay">
         <button onClick={() => s.open("calendar")}>
           <small>SIRADAKİ</small>

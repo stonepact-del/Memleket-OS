@@ -1,6 +1,7 @@
 import { SkipForward, X } from "lucide-react";
 import type { State } from "../../core/model";
 import { useGame } from "../../store";
+import { date } from "../format";
 import { Sheet } from "../components/Sheet";
 export function TimeSheet({ game, close }: { game: State; close: () => void }) {
   const s = useGame(),
@@ -55,6 +56,7 @@ export function TimeSheet({ game, close }: { game: State; close: () => void }) {
           <small>{next?.title || "Takvimde yeni olay yok"}</small>
         </span>
       </button>
+      <footer>Şu an · {date(game.now, { weekday: "long", day: "numeric", month: "long" })}</footer>
     </Sheet>
   );
 }

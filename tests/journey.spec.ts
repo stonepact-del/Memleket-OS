@@ -160,6 +160,11 @@ for(const viewport of [{width:320,height:568},{width:360,height:800},{width:390,
   });
 }
 
+test('large text keeps primary native surfaces reachable without horizontal overflow',async({page})=>{
+  await page.setViewportSize({width:390,height:844});await createLife(page);await page.evaluate(async()=>{const{useGame}=await import('/src/store.ts');useGame.getState().setting('largeText',true)});
+  for(const app of ['home','chat','mail','calendar','bank','career','stocks','map','settings'] as const){await page.evaluate(async app=>{const{useGame}=await import('/src/store.ts');useGame.getState().open(app)},app);await expect(page.locator('.app-window')).toBeVisible();const dimensions=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));expect(dimensions.scroll,`${app} should not overflow with large text`).toBeLessThanOrEqual(dimensions.client)}
+});
+
 test('chat reply and read state persist',async({page})=>{
   await createLife(page);await page.getByRole('button',{name:'Sohbet'}).first().click();
   await expect(page.locator('[data-app-identity="chat-native"]')).toBeVisible();
