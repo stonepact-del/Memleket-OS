@@ -1,3 +1,282 @@
-.school-app{min-height:100%;background:#f5f0e4;color:#263746;font-family:Georgia,"Times New Roman",serif}.school-masthead{position:relative;padding:30px 22px 24px;background:#314f69;color:#f8f2e7}.school-masthead:after{content:"";position:absolute;inset:auto 0 0;height:5px;background:repeating-linear-gradient(90deg,#d6b66d 0 18px,transparent 18px 24px)}.school-masthead button{position:absolute;right:18px;top:22px;width:44px;height:44px;border:1px solid #ffffff4a;border-radius:50%;background:transparent;color:white;font-size:28px}.school-masthead p,.school-masthead span{margin:0;font-family:var(--font);font-size:11px;letter-spacing:.1em;opacity:.8}.school-masthead h1{margin:7px 54px 8px 0;font-size:28px;line-height:1.1}.school-paper{padding:20px;background-image:linear-gradient(#6b87a012 1px,transparent 1px);background-size:100% 28px}.school-paper h2{font-size:18px;margin:0 0 12px}.school-today{margin-bottom:28px}.school-today>button{width:100%;display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:14px 0;border:0;border-block:1px solid #c7bfae;background:transparent;color:inherit;text-align:left}.school-today svg{color:#b26045}.school-today span{display:grid}.school-today small{font:700 10px var(--font);letter-spacing:.09em;color:#87614f}.school-today time{font:12px var(--font);color:#68737a}.school-today i{font:11px var(--font);font-style:normal}.school-section-title{display:flex;justify-content:space-between;align-items:center}.school-section-title span{font:11px var(--font);color:#697780}.subject-section ul,.school-results ol{list-style:none;padding:0;margin:0}.subject-section li{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #d7d0c1}.subject-glyph{display:grid;place-items:center;width:34px;height:34px;border:1px solid #8ca0af;border-radius:8px;background:#edf0ed;color:#31526b;font:bold 13px var(--font)}.subject-progress{min-width:0}.subject-progress div{display:flex;justify-content:space-between;gap:8px}.subject-progress span{font:12px var(--font)}.subject-progress progress{display:block;width:100%;height:5px;margin-top:7px;accent-color:#527792}.subject-section li>button{min-width:58px;min-height:40px;border:1px solid #496b84;border-radius:8px;background:transparent;color:#314f69;font-weight:700}.school-results{margin-top:28px}.school-results>p{color:#65727a}.school-results li{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed #b8b09f}.study-sheet{background:#f6f0e4!important;color:#263746!important;padding:16px 20px 22px!important}.study-sheet-symbol{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:#dce4e6;color:#31526b}.study-sheet h2{margin:5px 0 12px;font:700 28px Georgia}.study-sheet>small{font-size:10px;letter-spacing:.1em}.energy-context{display:flex;align-items:center;gap:8px}.study-sheet fieldset{padding:0;border:0}.study-sheet legend{margin-bottom:8px;font-weight:700}.study-sheet fieldset div{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.study-sheet fieldset button{min-height:46px;border:1px solid #9ca9ac;border-radius:9px;background:#fffaf0}.study-sheet fieldset button.selected{background:#314f69;color:white}.study-start,.study-cancel{width:100%;min-height:48px;border:0;border-radius:10px}.study-start{background:#314f69;color:white;font-weight:700}.study-cancel{margin-top:6px;background:transparent;color:#52636d}@media(min-width:900px){.school-paper{max-width:900px;margin:auto}.subject-section ul{display:grid;grid-template-columns:1fr 1fr;column-gap:30px}}
-/* Crafted academic workspace */
-.school-app{background:repeating-linear-gradient(#f7f1e4 0 31px,#9db1bc25 32px)}.school-masthead{background:radial-gradient(circle at 85% 20%,#66829a 0,transparent 32%),linear-gradient(130deg,#29465f,#3b607d);box-shadow:0 8px 24px #233b4b2b}.school-masthead:before{content:"ÖĞRENCİ DEFTERİ";position:absolute;right:20px;bottom:15px;font:9px system-ui;letter-spacing:.16em;color:#d8c38e}.school-overview{max-width:800px;margin:auto;background:#fbf6eacc;box-shadow:0 10px 30px #31495a14}.subject-row{border-bottom:1px solid #37526a1b!important;padding-block:13px!important}.subject-row:before{content:"";width:5px;height:30px;border-radius:5px;background:#d4b66f}.study-sheet{background:linear-gradient(180deg,#fffaf0,#eee5d2)!important;box-shadow:0 -18px 45px #1f334033!important}.exam-section{border-left:4px solid #bd6957;padding-left:14px!important}
+.school-app {
+  min-height: 100%;
+  background: #f5f0e4;
+  color: #263746;
+  font-family: Georgia, "Times New Roman", serif;
+}
+.school-masthead {
+  position: relative;
+  padding: 30px 22px 24px;
+  background: #314f69;
+  color: #f8f2e7;
+}
+.school-masthead:after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 5px;
+  background: repeating-linear-gradient(
+    90deg,
+    #d6b66d 0 18px,
+    transparent 18px 24px
+  );
+}
+.school-masthead button {
+  position: absolute;
+  right: 18px;
+  top: 22px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #ffffff4a;
+  border-radius: 50%;
+  background: transparent;
+  color: white;
+  font-size: 28px;
+}
+.school-masthead p,
+.school-masthead span {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+}
+.school-masthead h1 {
+  margin: 7px 54px 8px 0;
+  font-size: 28px;
+  line-height: 1.1;
+}
+.school-paper {
+  padding: 20px;
+  background-image: linear-gradient(#6b87a012 1px, transparent 1px);
+  background-size: 100% 28px;
+}
+.school-paper h2 {
+  font-size: 18px;
+  margin: 0 0 12px;
+}
+.school-today {
+  margin-bottom: 28px;
+}
+.school-today > button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 14px 0;
+  border: 0;
+  border-block: 1px solid #c7bfae;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+.school-today svg {
+  color: #b26045;
+}
+.school-today span {
+  display: grid;
+}
+.school-today small {
+  font: 700 10px var(--font);
+  letter-spacing: 0.09em;
+  color: #87614f;
+}
+.school-today time {
+  font: 12px var(--font);
+  color: #68737a;
+}
+.school-today i {
+  font: 11px var(--font);
+  font-style: normal;
+}
+.school-section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.school-section-title span {
+  font: 11px var(--font);
+  color: #697780;
+}
+.subject-section ul,
+.school-results ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.subject-section li {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 11px 0;
+  border-bottom: 1px solid #d7d0c1;
+}
+.subject-glyph {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #8ca0af;
+  border-radius: 8px;
+  background: #edf0ed;
+  color: #31526b;
+  font: bold 13px var(--font);
+}
+.subject-progress {
+  min-width: 0;
+}
+.subject-progress div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.subject-progress span {
+  font: 12px var(--font);
+}
+.subject-progress progress {
+  display: block;
+  width: 100%;
+  height: 5px;
+  margin-top: 7px;
+  accent-color: #527792;
+}
+.subject-section li > button {
+  min-width: 58px;
+  min-height: 40px;
+  border: 1px solid #496b84;
+  border-radius: 8px;
+  background: transparent;
+  color: #314f69;
+  font-weight: 700;
+}
+.school-results {
+  margin-top: 28px;
+}
+.school-results > p {
+  color: #65727a;
+}
+.school-results li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px dashed #b8b09f;
+}
+.study-sheet {
+  background: #f6f0e4 !important;
+  color: #263746 !important;
+  padding: 16px 20px 22px !important;
+}
+.study-sheet-symbol {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #dce4e6;
+  color: #31526b;
+}
+.study-sheet h2 {
+  margin: 5px 0 12px;
+  font: 700 28px Georgia;
+}
+.study-sheet > small {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+.energy-context {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.study-sheet fieldset {
+  padding: 0;
+  border: 0;
+}
+.study-sheet legend {
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.study-sheet fieldset div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+.study-sheet fieldset button {
+  min-height: 46px;
+  border: 1px solid #9ca9ac;
+  border-radius: 9px;
+  background: #fffaf0;
+}
+.study-sheet fieldset button.selected {
+  background: #314f69;
+  color: white;
+}
+.study-start,
+.study-cancel {
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: 10px;
+}
+.study-start {
+  background: #314f69;
+  color: white;
+  font-weight: 700;
+}
+.study-cancel {
+  margin-top: 6px;
+  background: transparent;
+  color: #52636d;
+}
+@media (min-width: 900px) {
+  .school-paper {
+    max-width: 900px;
+    margin: auto;
+  }
+  .subject-section ul {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 30px;
+  }
+}
+.school-app {
+  background: repeating-linear-gradient(#f7f1e4 0 31px, #9db1bc25 32px);
+}
+.school-masthead {
+  background:
+    radial-gradient(circle at 85% 20%, #66829a 0, transparent 32%),
+    linear-gradient(130deg, #29465f, #3b607d);
+  box-shadow: 0 8px 24px #233b4b2b;
+}
+.school-masthead:before {
+  content: "ÖĞRENCİ DEFTERİ";
+  position: absolute;
+  right: 20px;
+  bottom: 15px;
+  font: 9px system-ui;
+  letter-spacing: 0.16em;
+  color: #d8c38e;
+}
+.school-paper {
+  max-width: 800px;
+  margin: auto;
+  background: #fbf6eacc;
+  box-shadow: 0 10px 30px #31495a14;
+}
+.subject-section li {
+  border-bottom: 1px solid #37526a1b;
+  padding-block: 13px;
+}
+.subject-glyph {
+  border-left: 5px solid #d4b66f;
+}
+.study-sheet {
+  background: linear-gradient(180deg, #fffaf0, #eee5d2);
+  box-shadow: 0 -18px 45px #1f334033;
+}
+.school-today {
+  border-left: 4px solid #bd6957;
+  padding-left: 14px;
+}

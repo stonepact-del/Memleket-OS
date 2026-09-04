@@ -1,2 +1,260 @@
-.settings-app{min-height:100%;background:#eef0ed;color:#25302f;padding-bottom:100px}.settings-app>header{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#263435;color:#f7f7f0}.settings-app header button{width:44px;height:44px;border:0;border-radius:14px;background:#ffffff14;color:inherit}.settings-app header h1{margin:1px 0;font-size:1.45rem}.settings-app header small{letter-spacing:.12em;color:#aebdbc}.settings-app>section{padding:8px 14px}.settings-app h2{display:flex;gap:6px;align-items:center;margin:22px 5px 8px;font-size:.77rem;color:#617372;text-transform:uppercase;letter-spacing:.08em}.settings-app h2 svg{width:15px}.settings-group{border-radius:18px;background:#fff;box-shadow:0 4px 16px #24342c10;overflow:hidden}.settings-label{display:grid;grid-template-columns:30px 1fr auto;align-items:center;gap:9px;min-height:66px;padding:9px 13px}.settings-label+.settings-label{border-top:1px solid #e8ebe7}.settings-label>svg{width:21px;color:#527d78}.settings-label b,.settings-label small{display:block}.settings-label small{color:#788483;font-size:.72rem;margin-top:3px}.os-switch{width:50px;height:29px;border:0;border-radius:20px;background:#b7bfbd;padding:3px;transition:.2s}.os-switch span{display:block;width:23px;height:23px;border-radius:50%;background:#fff;box-shadow:0 2px 5px #0003;transition:.2s}.os-switch[aria-checked=true]{background:#397f71}.os-switch[aria-checked=true] span{translate:21px}.wallpaper-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.wallpaper-preview{border:2px solid transparent;border-radius:16px;background:#fff;padding:6px;color:inherit}.wallpaper-preview i{display:block;height:72px;border-radius:11px;background:#ccc}.preview-city i{background:linear-gradient(160deg,#eca56c 0 45%,#264d43 46% 70%,#142d2d 71%)}.preview-coast i{background:linear-gradient(160deg,#f5d8a5 0 45%,#73b4ad 46% 75%,#376e74 76%)}.preview-simple i{background:radial-gradient(circle at 70% 25%,#d8bf83,#5a735e)}.wallpaper-preview span{display:block;padding:7px 0 2px;font-weight:700}.wallpaper-preview[aria-pressed=true]{border-color:#397f71;box-shadow:var(--focus-ring)}.privacy-row{display:flex;gap:12px;padding:15px;border-radius:18px;background:#dfe9e6}.privacy-row svg{flex:0 0 24px;color:#397f71}.privacy-row p{margin:0;font-size:.82rem;line-height:1.5}.privacy-row b{display:block;margin-bottom:3px}.data-actions{overflow:hidden;border-radius:18px;background:#fff}.data-actions button,.data-actions label{width:100%;min-height:70px;display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:center;text-align:left;border:0;background:transparent;color:inherit;padding:10px 14px}.data-actions>*+*{border-top:1px solid #e6e9e6!important}.data-actions svg{color:#527d78}.data-actions b,.data-actions small{display:block}.data-actions small{font-size:.72rem;color:#76817f;margin-top:3px}.data-actions input{position:absolute;opacity:0;width:1px;height:1px}@media(min-width:900px){.settings-app>section{max-width:760px;margin:auto;padding-bottom:50px}.settings-app>header{padding-inline:max(16px,calc((100% - 760px)/2))}}
-.settings-group,.data-actions{box-shadow:inset 0 1px #fff,0 8px 22px #24342c12}.settings-label>svg{padding:5px;border-radius:9px;background:#dce9e5;box-sizing:content-box}.os-switch{box-shadow:inset 0 2px 5px #0002}.os-switch[aria-checked=true]{box-shadow:inset 0 2px 5px #183b3033,0 0 0 3px #397f7112}.wallpaper-preview i{position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px #fff5}.wallpaper-preview i:after{content:"";position:absolute;inset:auto 0 0;height:24px;background:linear-gradient(90deg,#1d3d35aa 20%,transparent 20% 30%,#1d3d35aa 30% 48%,transparent 48% 60%,#1d3d35aa 60%)}.privacy-row{box-shadow:inset 0 1px #fff,0 8px 20px #23413612}
+.settings-app {
+  min-height: 100%;
+  background: #eef0ed;
+  color: #25302f;
+  padding-bottom: 100px;
+}
+.settings-app > header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #263435;
+  color: #f7f7f0;
+}
+.settings-app header button {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 14px;
+  background: #ffffff14;
+  color: inherit;
+}
+.settings-app header h1 {
+  margin: 1px 0;
+  font-size: 1.45rem;
+}
+.settings-app header small {
+  letter-spacing: 0.12em;
+  color: #aebdbc;
+}
+.settings-app > section {
+  padding: 8px 14px;
+}
+.settings-app h2 {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 22px 5px 8px;
+  font-size: 0.77rem;
+  color: #617372;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.settings-app h2 svg {
+  width: 15px;
+}
+.settings-group {
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 4px 16px #24342c10;
+  overflow: hidden;
+}
+.settings-label {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  align-items: center;
+  gap: 9px;
+  min-height: 66px;
+  padding: 9px 13px;
+}
+.settings-label + .settings-label {
+  border-top: 1px solid #e8ebe7;
+}
+.settings-label > svg {
+  width: 21px;
+  color: #527d78;
+}
+.settings-label b,
+.settings-label small {
+  display: block;
+}
+.settings-label small {
+  color: #788483;
+  font-size: 0.72rem;
+  margin-top: 3px;
+}
+.os-switch {
+  width: 50px;
+  height: 29px;
+  border: 0;
+  border-radius: 20px;
+  background: #b7bfbd;
+  padding: 3px;
+  transition: 0.2s;
+}
+.os-switch span {
+  display: block;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 5px #0003;
+  transition: 0.2s;
+}
+.os-switch[aria-checked="true"] {
+  background: #397f71;
+}
+.os-switch[aria-checked="true"] span {
+  translate: 21px;
+}
+.wallpaper-picker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+.wallpaper-preview {
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background: #fff;
+  padding: 6px;
+  color: inherit;
+}
+.wallpaper-preview i {
+  display: block;
+  height: 72px;
+  border-radius: 11px;
+  background: #ccc;
+}
+.preview-city i {
+  background: linear-gradient(
+    160deg,
+    #eca56c 0 45%,
+    #264d43 46% 70%,
+    #142d2d 71%
+  );
+}
+.preview-coast i {
+  background: linear-gradient(
+    160deg,
+    #f5d8a5 0 45%,
+    #73b4ad 46% 75%,
+    #376e74 76%
+  );
+}
+.preview-simple i {
+  background: radial-gradient(circle at 70% 25%, #d8bf83, #5a735e);
+}
+.wallpaper-preview span {
+  display: block;
+  padding: 7px 0 2px;
+  font-weight: 700;
+}
+.wallpaper-preview[aria-pressed="true"] {
+  border-color: #397f71;
+  box-shadow: var(--focus-ring);
+}
+.privacy-row {
+  display: flex;
+  gap: 12px;
+  padding: 15px;
+  border-radius: 18px;
+  background: #dfe9e6;
+}
+.privacy-row svg {
+  flex: 0 0 24px;
+  color: #397f71;
+}
+.privacy-row p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+.privacy-row b {
+  display: block;
+  margin-bottom: 3px;
+}
+.data-actions {
+  overflow: hidden;
+  border-radius: 18px;
+  background: #fff;
+}
+.data-actions button,
+.data-actions label {
+  width: 100%;
+  min-height: 70px;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 10px 14px;
+}
+.data-actions > * + * {
+  border-top: 1px solid #e6e9e6 !important;
+}
+.data-actions svg {
+  color: #527d78;
+}
+.data-actions b,
+.data-actions small {
+  display: block;
+}
+.data-actions small {
+  font-size: 0.72rem;
+  color: #76817f;
+  margin-top: 3px;
+}
+.data-actions input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+@media (min-width: 900px) {
+  .settings-app > section {
+    max-width: 760px;
+    margin: auto;
+    padding-bottom: 50px;
+  }
+  .settings-app > header {
+    padding-inline: max(16px, calc((100% - 760px) / 2));
+  }
+}
+.settings-group,
+.data-actions {
+  box-shadow:
+    inset 0 1px #fff,
+    0 8px 22px #24342c12;
+}
+.settings-label > svg {
+  padding: 5px;
+  border-radius: 9px;
+  background: #dce9e5;
+  box-sizing: content-box;
+}
+.os-switch {
+  box-shadow: inset 0 2px 5px #0002;
+}
+.os-switch[aria-checked="true"] {
+  box-shadow:
+    inset 0 2px 5px #183b3033,
+    0 0 0 3px #397f7112;
+}
+.wallpaper-preview i {
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px #fff5;
+}
+.wallpaper-preview i:after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 24px;
+  background: linear-gradient(
+    90deg,
+    #1d3d35aa 20%,
+    transparent 20% 30%,
+    #1d3d35aa 30% 48%,
+    transparent 48% 60%,
+    #1d3d35aa 60%
+  );
+}
+.privacy-row {
+  box-shadow:
+    inset 0 1px #fff,
+    0 8px 20px #23413612;
+}
