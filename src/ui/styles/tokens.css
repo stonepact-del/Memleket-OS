@@ -23,6 +23,12 @@
   --motion-fast: 120ms;
   --motion-standard: 220ms;
   --motion-sheet: 320ms;
+  --ease-out: cubic-bezier(.2,.8,.2,1);
+  --touch-target: 44px;
+  --focus-ring: 0 0 0 3px rgba(50, 126, 101, .28);
+  --color-positive: #167252;
+  --color-warning: #a86a17;
+  --color-destructive: #a43f35;
   --shadow-low: 0 4px 14px rgba(9, 25, 19, 0.12);
   --shadow-floating: 0 16px 38px rgba(5, 20, 15, 0.24);
   --shadow-modal: 0 -18px 60px rgba(0, 0, 0, 0.34);

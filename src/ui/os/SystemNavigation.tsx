@@ -5,7 +5,7 @@ export function SystemNavigation() {
   return (
     <footer className="system-nav">
       <button onClick={() => s.open("home")} aria-label="Ana ekran">
-        <span />
+        <span /><small>Ana ekran</small>
       </button>
     </footer>
   );

@@ -3,7 +3,12 @@
 @import "./styles/menu.css";
 @import "./styles/os.css";
 @import "./styles/wallpaper.css";
-@import "./styles/legacy.css";
+@import "./styles/home.css";
 @import "./apps/school/school.css";
 @import "./apps/career/career.css";
 @import "./apps/calendar/calendar.css";
+@import "./apps/stocks/stocks.css";
+@import "./apps/map/map.css";
+@import "./apps/notes/notes.css";
+@import "./apps/settings/settings.css";
+@import "./apps/archive/archive.css";

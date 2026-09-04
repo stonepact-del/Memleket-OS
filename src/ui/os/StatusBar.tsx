@@ -26,6 +26,7 @@ export function StatusBar({ openCenter }: { openCenter: () => void }) {
         aria-label="Bildirim merkezini aç"
         onClick={openCenter}
       >
+        <i className="system-pulse" aria-hidden="true" />
         <PhoneIndicators />
         {g.notifications.some((n) => !n.read) && <b />}
       </button>

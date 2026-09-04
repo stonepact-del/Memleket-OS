@@ -103,6 +103,7 @@ function Symbol({ app }: { app: AppId }) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
+      <rect className="icon-field" x="5" y="5" width="46" height="46" rx="15" />
       {paths[app] || <path d="M12 42V15l16 14 16-14v27" />}
     </svg>
   );

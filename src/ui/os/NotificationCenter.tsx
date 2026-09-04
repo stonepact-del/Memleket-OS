@@ -22,7 +22,7 @@ export function NotificationCenter({
       <header>
         <div>
           <small>
-            {date(game.now, { weekday: "long", day: "numeric", month: "long" })}
+            MEMLEKETOS · {date(game.now, { weekday: "long", day: "numeric", month: "long" })}
           </small>
           <h2>Bugün</h2>
         </div>
@@ -39,7 +39,7 @@ export function NotificationCenter({
         </button>
       </div>
       {game.notifications.length === 0 ? (
-        <p className="empty">Yeni bildirimin yok.</p>
+        <div className="notification-empty"><AppIcon app="home"/><h3>Her şey sakin</h3><p>Yeni bir gelişme olduğunda burada göreceksin.</p></div>
       ) : (
         <div className="notification-stack">
           {game.notifications.map((n) => (

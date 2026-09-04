@@ -102,6 +102,7 @@ export function LockScreen({
           className="lock-notifications"
           aria-label="Bildirim önizlemeleri"
         >
+          <div className="lock-notification-heading"><span>Bugün</span><b>{game.notifications.filter((notification) => !notification.read).length} yeni</b></div>
           {game.notifications
             .filter((notification) => !notification.read)
             .slice(0, 2)

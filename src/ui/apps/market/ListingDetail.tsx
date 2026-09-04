@@ -29,20 +29,20 @@ export function ListingDetail({
       </header>
       <ListingThumbnail listing={listing} large />
       <section className="market-detail-copy">
+        <h1>{listing.title}</h1>
         <strong className="market-price">
           {money(n?.agreedPrice ?? listing.price)}
         </strong>
-        <h1>{listing.title}</h1>
+        <section className="market-seller">
+          <small>SATICI</small>
+          <b>{listing.seller}</b>
+        </section>
         <div className="market-key-facts">
           <span>{listing.category}</span>
           <span>%{listing.condition} kondisyon</span>
           <span>Piyasa {money(listing.marketValue)}</span>
         </div>
         <p>{listing.details}</p>
-        <section className="market-seller">
-          <small>SATICI</small>
-          <b>{listing.seller}</b>
-        </section>
         <div className="market-status" aria-label="İlan işlem durumu">
           {n?.contacted && <span>Satıcıyla konuşuldu</span>}
           {n?.offer && <span>Teklifin: {money(n.offer)}</span>}

@@ -160,6 +160,15 @@ for(const viewport of [{width:320,height:568},{width:360,height:800},{width:390,
   });
 }
 
+test('large text keeps primary native surfaces reachable without horizontal overflow',async({page})=>{
+  await page.setViewportSize({width:390,height:844});await createLife(page);await page.evaluate(async()=>{const{useGame}=await import('/src/store.ts');useGame.getState().setting('largeText',true)});
+  for(const app of ['home','chat','mail','calendar','bank','career','stocks','map','settings'] as const){await page.evaluate(async app=>{const{useGame}=await import('/src/store.ts');useGame.getState().open(app)},app);await expect(page.locator('.app-window')).toBeVisible();const dimensions=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));expect(dimensions.scroll,`${app} should not overflow with large text`).toBeLessThanOrEqual(dimensions.client)}
+});
+
+test('home next-event widget opens the exact calendar event',async({page})=>{
+  await createLife(page);await page.locator('.context-widget>button').click();await expect(page.locator('.event-detail')).toBeVisible();await expect(page.getByRole('heading',{name:'Matematik sınavı'})).toBeVisible();
+});
+
 test('chat reply and read state persist',async({page})=>{
   await createLife(page);await page.getByRole('button',{name:'Sohbet'}).first().click();
   await expect(page.locator('[data-app-identity="chat-native"]')).toBeVisible();
@@ -211,8 +220,8 @@ test('save feedback, controlled invalid import and wallpaper simulation time',as
   await page.getByRole('button',{name:'Hatayı kapat'}).click();await goHome(page);await page.getByRole('button',{name:/Okulum/}).first().click();await page.getByRole('button',{name:/Matematik çalış/}).click();await page.getByRole('button',{name:'2 saat'}).click();await page.getByRole('button',{name:'Çalışmaya başla'}).click();await page.getByRole('button',{name:/Matematik çalış/}).click();await page.getByRole('button',{name:'2 saat'}).click();await page.getByRole('button',{name:'Çalışmaya başla'}).click();await goHome(page);await expect(page.locator('.device')).toHaveClass(/tod-day/);await page.locator('.app-grid > button').filter({hasText:'Ayarlar'}).click();await page.getByRole('button',{name:'Sahil'}).click();await expect(page.locator('.device')).toHaveClass(/wallpaper-coast.*tod-day|tod-day.*wallpaper-coast/);
 });
 
-test('untouched apps preserve titled shell navigation',async({page})=>{
-  await createLife(page);await page.getByRole('button',{name:'Notlar'}).first().click();await expect(page.getByRole('heading',{name:'Notlar',exact:true})).toBeVisible();await page.getByRole('button',{name:'Ana ekrana dön'}).click();await expect(page.locator('.phone-home')).toBeVisible();
+test('native notes preserves notebook navigation',async({page})=>{
+  await createLife(page);await page.getByRole('button',{name:'Notlar'}).first().click();await expect(page.locator('[data-app-identity="notes-native"]')).toBeVisible();await page.getByRole('button',{name:'Ana ekrana dön'}).click();await expect(page.locator('.phone-home')).toBeVisible();
 });
 
 test('mobile chat thread returns naturally to conversation list',async({page})=>{
