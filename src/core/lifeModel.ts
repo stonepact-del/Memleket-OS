@@ -6,9 +6,10 @@ const metric = z.number().finite().min(0).max(100);
 const at = z.iso.datetime();
 export const routineSchema = z.enum(['balanced', 'study', 'work', 'social', 'health', 'creative']);
 export type Routine = z.infer<typeof routineSchema>;
+export const interactionKindSchema=z.enum(['sharedTime','supported','declinedInvitation','disagreement','apologized','repairedTrust','disappointed','reconnected','helped','conflictResolved']);
 export const effectSchema = z.strictObject({
-  kind: z.enum(['interview', 'offer', 'routine', 'direction', 'registerYks', 'takeYks', 'skipYks', 'preferences', 'enroll', 'vocational', 'working', 'courses', 'leave', 'transfer', 'housing', 'support', 'debt', 'relationship', 'promotion', 'quit', 'retire', 'continue', 'legacy', 'wellbeing', 'internship', 'followup']),
-  target: z.string().max(1000).optional(), value: z.number().finite().optional(),
+  kind: z.enum(['interview', 'offer', 'routine', 'direction', 'registerYks', 'takeYks', 'skipYks', 'preferences', 'enroll', 'vocational', 'working', 'courses', 'leave', 'transfer', 'housing', 'support', 'debt', 'relationship', 'interaction', 'narrative', 'promotion', 'quit', 'retire', 'continue', 'legacy', 'wellbeing', 'internship', 'followup']),
+  target: z.string().max(1000).optional(), value: z.number().finite().optional(), interaction:interactionKindSchema.optional(), actorId:z.string().max(1000).optional(),
 }).superRefine((e,ctx)=>{
   const allowed:Partial<Record<typeof e.kind,string[]>>={routine:['balanced','study','work','social','health','creative'],direction:['science','language','social'],housing:Object.keys(TurkeyRuleset.housing),support:['none','grant','loan'],courses:['standard','light'],enroll:TurkeyRuleset.programs.map(p=>p.id),transfer:TurkeyRuleset.programs.map(p=>p.id),interview:['honest','prepared','confident','miss']};
   if(allowed[e.kind]&&!allowed[e.kind]!.includes(e.target??''))ctx.addIssue({code:'custom',message:'Geçersiz etki hedefi',path:['target']});
@@ -28,6 +29,8 @@ export const decisionSchema = z.strictObject({
 });
 export type Decision = z.infer<typeof decisionSchema>;
 export type DecisionOption = Decision['options'][number];
+const narrativeHistorySchema=z.strictObject({id:z.string(),at:at,actorId:z.string().optional(),outcome:z.string().optional()});
+const narrativeChainSchema=z.strictObject({id:z.string(),actorId:z.string().optional(),choiceId:z.string(),startedAt:at,dueAt:at.optional(),resolved:z.boolean()});
 export const lifeSchema = z.strictObject({
   rulesetId:z.literal('tr-fiction-2026-v1'), sequence:count, status:z.enum(['living','retired','ended']),
   routine:routineSchema, focus:z.string(), direction:z.enum(['science','language','social']),
@@ -44,5 +47,6 @@ export const lifeSchema = z.strictObject({
   people:z.record(z.string(), z.strictObject({birthYear:count,busyUntil:at,lastContact:at,alive:z.boolean()})),
   population:z.strictObject({students:count,workers:count,retirees:count}),
   ledgerArchive:z.strictObject({count:count,net:z.number().int().safe(),through:at.optional()}),
+  narrativeHistory:z.array(narrativeHistorySchema).default([]), narrativeChains:z.record(z.string(),narrativeChainSchema).default({}), narrativeLastAt:at.optional(),
 });
 export type LifeState = z.infer<typeof lifeSchema>;

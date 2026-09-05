@@ -14,7 +14,7 @@ for(const [width,height] of sizes)test(`release apps and decision controls at ${
     await page.screenshot({path:`/tmp/memleket-${width}-${app}.png`});
   }
   await page.evaluate(async()=>{const {useGame}=await import('/src/store.ts');useGame.getState().open('home');useGame.getState().advance(300)});
-  const modal=page.getByRole('dialog',{name:'Hayat kararı'});await expect(modal).toBeVisible();
+  const modal=page.getByRole('dialog',{name:/Yanıt bekleyen karar/});await expect(modal).toBeVisible();
   await expect(modal.getByRole('button',{name:/Yabancı dil/})).toBeEnabled();
   await modal.getByRole('button',{name:/Yabancı dil/}).scrollIntoViewIfNeeded();
   const box=await modal.getByRole('button',{name:/Yabancı dil/}).boundingBox();expect(box!.height).toBeGreaterThanOrEqual(44);expect(box!.y+box!.height).toBeLessThanOrEqual(height);
@@ -31,7 +31,7 @@ test('routine, blocking consequence, money, save and reload journey',async({page
   await page.reload();await page.getByRole('button',{name:'Telefonun kilidini aç'}).click();
   const restored=await page.evaluate(async()=>{const{useGame}=await import('/src/store.ts');return useGame.getState().game});expect(restored).toEqual(snapshot);
   await page.evaluate(async()=>{const{useGame}=await import('/src/store.ts');useGame.getState().advance(300)});
-  const d=page.getByRole('dialog',{name:'Hayat kararı'});await expect(d).toContainText('hangi alana');
+  const d=page.getByRole('dialog',{name:/Yanıt bekleyen karar/});await expect(d).toContainText('hangi alana');
   await page.reload();await page.getByRole('button',{name:'Telefonun kilidini aç'}).click();await expect(d).toBeVisible();
   await d.getByRole('button',{name:/Sayısal/}).click();await expect(d).toHaveCount(0);
   await page.getByRole('button',{name:/Hayat Arşivi/}).first().click();await expect(page.getByText('Yeni yılda hangi alana ağırlık vereceksin?: Sayısal',{exact:true})).toBeVisible();

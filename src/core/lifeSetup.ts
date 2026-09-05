@@ -7,7 +7,7 @@ export function initialLife(now:string,npcs:NPC[]):LifeState {
   return {rulesetId:rules.id,sequence:1,status:'living',routine:'balanced',focus:'Matematik',direction:'science',dayCount:0,routineDays:0,lastActionDay:now.slice(0,10),actionMinutes:0,
     qualification:'none',route:'school',yks:{attempts:0,registeredYear:0,tyt:0,ayt:0,ydt:0,resultYear:0,preferences:[]},semester:0,termEffort:0,courses:[],studyLoad:'standard',internship:false,
     experienceDays:0,workDays:0,careerLevel:0,savings:0,debt:0,support:'none',pension:0,endAt:iso(Date.UTC(year+70,5,1,7)),legacy:'',cooldowns:{},decisions:[],followups:{},
-    people:Object.fromEntries(npcs.map(n=>[n.id,{birthYear:year-n.age,busyUntil:now,lastContact:now,alive:true}])),population:{students:480,workers:2100,retirees:640},ledgerArchive:{count:0,net:0}};
+    people:Object.fromEntries(npcs.map(n=>[n.id,{birthYear:year-n.age,busyUntil:now,lastContact:now,alive:true}])),population:{students:480,workers:2100,retirees:640},ledgerArchive:{count:0,net:0},narrativeHistory:[],narrativeChains:{}};
 }
 export function futureDate(s:State,month:number,date:number,hour=9) {
   const year=new Date(s.now).getUTCFullYear();

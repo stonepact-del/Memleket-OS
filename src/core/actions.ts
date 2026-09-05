@@ -90,6 +90,7 @@ export function resolveDecision(s:State,id:string,optionId:string) {
   if(d.type==='offer'){decideOffer(s,d.relatedEntities[0],o.id==='accept');return;}
   if(o.moneyCost)postLedger(s,-o.moneyCost,d.title,'expense');
   d.status='resolved';d.resolvedAt=s.now;d.outcome=o.label;
+  if(d.type.startsWith('narrative:')){const item=s.life.narrativeHistory.findLast(h=>h.id===d.type.slice('narrative:'.length)&&h.outcome===undefined);if(item)item.outcome=o.id;}
   const ev=s.events.find(e=>e.id===d.id);if(ev)markProcessed(s,ev);
   if(d.type==='budget'&&o.id==='family'&&s.balance<0)postLedger(s,-s.balance+rules.allowance,'Yakınlarından tek seferlik toparlanma desteği','income');
   if(d.type==='promotion'&&o.id==='keep'&&s.employment)s.employment.performance=60;

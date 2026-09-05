@@ -4,6 +4,7 @@ import { TurkeyRuleset as rules } from '../data/turkeyRuleset';
 import { hashSeed, RNG } from './rng';
 import { age, clamp, DAY, iso, journal, letter, markProcessed, nextId, postLedger, schedule } from './primitives';
 import { futureDate } from './lifeSetup';
+import { resolveNarrativeFollowup, runNarrativeDirector } from './narrative';
 
 export function option(id:string,label:string,description:string,effects:LifeEffect[], timeMinutes=0,moneyCost=0,eligibility:DecisionOption['eligibility']='always'):DecisionOption {
   return {id,label,description,effects,timeMinutes,moneyCost,eligibility,delayed:[]};
@@ -45,6 +46,29 @@ export function optionUnavailable(s:State,d:Decision,o:DecisionOption):string|un
 export function stopEmployment(s:State) {
   for(const e of s.events.filter(e=>!e.processed&&['salary','shift'].includes(e.type)))markProcessed(s,e);
   s.employment=undefined; s.life.workDays=0;
+}
+function rememberInteraction(s:State,npcId:string,kind:NonNullable<LifeEffect['interaction']>,impact:number) {
+  const n=s.npcs.find(n=>n.id===npcId);if(!n)return;
+  const copy:Record<NonNullable<LifeEffect['interaction']>,string>={sharedTime:'Birlikte zaman ayırdınız.',supported:'Zor bir anda destek oldun.',declinedInvitation:'Davetini bu kez geri çevirdin.',disagreement:'Aynı konuda anlaşamadınız.',apologized:'Açıkça özür diledin.',repairedTrust:'Aranızdaki güveni onarmaya çalıştın.',disappointed:'Beklentisini karşılayamadın.',reconnected:'Yıllar sonra yeniden bağ kurdunuz.',helped:'İşi birlikte sırtlandınız.',conflictResolved:'Konuşup bir orta yol buldunuz.'};
+  const positive=Math.max(0,impact),negative=Math.max(0,-impact);
+  if(['declinedInvitation','disagreement','disappointed'].includes(kind)){n.relationship.warmth=clamp(n.relationship.warmth-negative);n.relationship.trust=clamp(n.relationship.trust-negative/2);n.relationship.tension=clamp(n.relationship.tension+negative);}
+  else {n.relationship.warmth=clamp(n.relationship.warmth+positive);n.relationship.trust=clamp(n.relationship.trust+positive*.7);n.relationship.tension=clamp(n.relationship.tension-positive*.55);}
+  s.life.people[n.id].lastContact=s.now;n.memories.push({id:nextId(s,'memory'),at:s.now,kind,summary:copy[kind],impact});n.memories=n.memories.slice(-20);s.player.social=clamp(s.player.social+(impact>0?Math.min(8,impact):0));
+}
+function startNarrativeChain(s:State,token:string,actorId?:string) {
+  const [, , id,rawDays]=token.split(':');if(!id||s.life.narrativeChains[id]&&!s.life.narrativeChains[id].resolved)return;
+  const dueAt=iso(Date.parse(s.now)+Math.max(1,Number(rawDays)||14)*DAY);
+  s.life.narrativeChains[id]={id,actorId,choiceId:'chosen',startedAt:s.now,dueAt,resolved:false};
+  schedule(s,'narrative-followup',dueAt,'Hayatın akışında bir gelişme',true,[id,actorId??'']);
+}
+function applyNarrativeToken(s:State,token:string,actorId?:string) {
+  if(token.startsWith('chain:start:')){startNarrativeChain(s,token,actorId);return;}
+  const [field,sub,value]=token.split(':');const amount=Number(value??sub);
+  if(field==='stress'||field==='energy'||field==='mood'||field==='health')s.player[field]=clamp(s.player[field]+amount);
+  else if(field==='confidence')s.player.traits.confidence=clamp(s.player.traits.confidence+amount);
+  else if(field==='knowledge'&&sub in s.education.knowledge)s.education.knowledge[sub]=clamp(s.education.knowledge[sub]+Number(value));
+  else if(field==='performance'&&s.employment)s.employment.performance=clamp(s.employment.performance+amount);
+  else if(field==='experience')s.life.experienceDays+=Math.max(0,amount);
 }
 export function housingDecision(s:State) {
   decision(s,'housing','market','Nerede yaşayacaksın?','Evin giderlerini, yol süreni ve günlük rahatlığını değiştirir. Ailene dönmek her zaman mümkün.',
@@ -120,11 +144,10 @@ export function applyEffect(s:State,e:LifeEffect) {
       const amount=Math.max(0,e.value??0); if(l.debt+amount>rules.debtLimit)throw Error('Borç sınırına ulaştın'); l.debt+=amount;postLedger(s,amount,'Kurgusal dayanışma borcu','income');break;
     }
     case 'relationship': {
-      const n=s.npcs.find(n=>n.id===e.target);if(!n)break;
-      n.relationship.warmth=clamp(n.relationship.warmth+(e.value??5));n.relationship.trust=clamp(n.relationship.trust+(e.value??5)/2);
-      n.relationship.tension=clamp(n.relationship.tension-(e.value??5)); l.people[n.id].lastContact=s.now;
-      n.memories.push({id:nextId(s,'memory'),at:s.now,kind:'sharedTime',summary:'Birbirinize zaman ayırdınız.',impact:e.value??5});n.memories=n.memories.slice(-20);s.player.social=clamp(s.player.social+8);break;
+      if(e.target)rememberInteraction(s,e.target,'sharedTime',e.value??5);break;
     }
+    case 'interaction': if(e.target&&e.interaction)rememberInteraction(s,e.target,e.interaction,e.value??5);break;
+    case 'narrative': if(e.target)applyNarrativeToken(s,e.target,e.actorId);break;
     case 'promotion': if(s.employment){const j=s.jobs.find(j=>j.id===s.employment!.jobId)!;j.salary=Math.min(12000000,Math.round(j.salary*1.18));l.careerLevel++;s.employment.performance=60;journal(s,'Kariyer',`${j.position} rolünde sorumluluk ve ücretin arttı.`);}break;
     case 'quit': stopEmployment(s);journal(s,'Kariyer','İşinden ayrıldın. Deneyimin sonraki başvurularında seninle.');break;
     case 'retire': {
@@ -173,6 +196,7 @@ function dailyRoutine(s:State) {
   if(r==='social')p.traits.socialSkill=clamp(p.traits.socialSkill+.015);
   // Planned travel is part of the day's routine, and its time/comfort affects recovery.
   p.energy=clamp(p.energy-s.household.housing.commute*.002);
+  if(l.dayCount%7===0)runNarrativeDirector(s);
   schedule(s,'life-day',iso(Date.parse(s.now)+DAY),'Günlük düzen');
 }
 function monthlyLife(s:State) {
@@ -209,6 +233,11 @@ function monthlyLife(s:State) {
     else if(n.age<23){n.lifeStage='genç yetişkin';n.occupation=hashSeed(n.id)%2?'Üniversite öğrencisi':'Atölye çalışanı';}
     else if(n.age<60){n.lifeStage='yetişkinlik';n.occupation=hashSeed(n.id)%2?'Uzman':'Esnaf';}
     else {n.lifeStage='emeklilik';n.occupation='Emekli';}
+    // Close people have their own cadence. This is deliberately summarized for
+    // relevant people and never expands the population into full NPC objects.
+    const lifeRoll=hashSeed(`${n.id}|${year}|${month}`)%12;
+    if(n.closeness==='close'&&lifeRoll===0){n.goal=['mesleğinde ilerlemek','daha sakin bir düzen kurmak','yakınlarıyla bağını korumak','yeni bir beceri öğrenmek'][hashSeed(`${n.id}|goal|${year}`)%4];}
+    if(n.closeness!=='distant'&&lifeRoll===1&&n.age>=18&&n.age<60){n.occupation=n.occupation==='Uzman'?'Proje sorumlusu':n.occupation==='Esnaf'?'Kendi işinde yoğun':'Yeni bir iş düzeninde';}
     const daysSince=(Date.parse(s.now)-Date.parse(person.lastContact))/DAY;
     n.relationship.warmth=clamp(n.relationship.warmth-(daysSince>60?1:0)+(l.routine==='social'?1:0));
     if(n.closeness==='close'&&n.relationship.warmth<35)n.closeness='relevant';
@@ -218,9 +247,10 @@ function monthlyLife(s:State) {
       const text=n.age<18?'Bu ay dersler yoğun. Birlikte kısa bir yürüyüş iyi gelir.':n.age<23?`Yeni düzenime alışıyorum: ${n.occupation.toLocaleLowerCase('tr-TR')}. Bir ara görüşelim.`:n.age<60?'İş ve ev arasında zaman hızlı geçiyor. Seni de görmek isterim.':'Bugün eski fotoğraflara baktım. Birlikte çay içelim mi?';
       s.posts.unshift({id:nextId(s,'post'),npcId:n.id,at:s.now,text,likes:0,liked:false,comments:[]});
       if(month%3===hashSeed(n.id)%3)decision(s,`invite-${n.id}`,'chat',`${n.name.split(' ')[0]}’dan davet`,text,[
-        option('meet','Birlikte zaman geçir','İki saat yürüyüş ve sohbet. Güven ve yakınlık artar.',[{kind:'relationship',target:n.id,value:8}],120),
-        option('later','Bu kez başka zamana bırak','Programını koru. Küçük bir mesafe oluşabilir.',[{kind:'relationship',target:n.id,value:-2}]),
+        option('meet','Birlikte zaman geçir','İki saat yürüyüş ve sohbet. Güven ve yakınlık artar.',[{kind:'interaction',target:n.id,value:8,interaction:'sharedTime'}],120),
+        option('later','Bu kez başka zamana bırak','Programını koru. Küçük bir mesafe oluşabilir.',[{kind:'interaction',target:n.id,value:-2,interaction:'declinedInvitation'}]),
       ],false,[n.id]);
+      if(n.closeness==='close'&&lifeRoll===3){s.messages.unshift({id:nextId(s,'message'),npcId:n.id,at:s.now,text:`Bugün biraz yoğunum; ${n.goal} için koşturuyorum. Uygun olunca ses ver.`,fromPlayer:false,read:false});s.messages=s.messages.slice(-240);}
     }
   }
   for(const c of s.companies){const move=(hashSeed(`${c.id}-${year}-${month}`)%9)-4;c.price=Math.max(100,Math.min(1000000,Math.round(c.price*(100+move)/100)));c.priceHistory=[...c.priceHistory,c.price].slice(-24);c.hiringDemand=clamp(c.hiringDemand+move);}
@@ -310,6 +340,13 @@ export function processLifeEvent(s:State,e:GameEvent):boolean {
       const d=s.life.decisions.find(d=>d.id===e.entityIds?.[0]);if(d?.status==='pending'&&!d.blocking){d.status='expired';d.outcome='Davet süresi geçti; yanıt verilmedi.';d.resolvedAt=s.now;for(const id of d.relatedEntities){const n=s.npcs.find(n=>n.id===id);if(n)n.relationship.warmth=clamp(n.relationship.warmth-2);}}return true;
     }
     case 'life-followup': for(const effect of s.life.followups[e.id]??[])applyEffect(s,effect);delete s.life.followups[e.id];letter(s,'archive','Hayatın akışı',e.title,'Önceki kararının sonucu hayatına yansıdı.');return true;
+    case 'narrative-followup': {
+      const chainId=e.entityIds?.[0];if(chainId){
+        // Kept out of the decision UI: chain outcomes are discovered when life reaches them.
+        // The resolver remains deterministic and only runs through this scheduled event.
+        resolveNarrativeFollowup(s,chainId);
+      }return true;
+    }
     case 'life-end': {
       s.life.status='ended';s.life.endedAt=s.now;stopEmployment(s);
       journal(s,'Hayat',`${s.player.name}’in hayatı ${age(s)} yaşında doğal ve sakin biçimde sona erdi. ${s.life.legacy||'Geride paylaşılan günler, öğrenilenler ve hatıralar kaldı.'}`);

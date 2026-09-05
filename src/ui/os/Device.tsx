@@ -87,7 +87,7 @@ export function Device() {
     game = s.game!,
     [locked, setLocked] = useState(true),
     [center, setCenter] = useState(false),
-    [timeOpen, setTimeOpen] = useState(false), [dismissedDecision,setDismissedDecision]=useState<string>();
+    [timeOpen, setTimeOpen] = useState(false);
   const pending=pendingDecision(game);
   useEffect(() => {
     if (!s.notice) return;
@@ -111,7 +111,7 @@ export function Device() {
         <NotificationCenter game={game} close={() => setCenter(false)} />
       )}{" "}
       {timeOpen && <TimeSheet game={game} close={() => setTimeOpen(false)} />}{" "}
-      {pending && !['interview','offer'].includes(pending.type) && pending.id!==dismissedDecision && !timeOpen && <Sheet label="Hayat kararı" onClose={()=>setDismissedDecision(pending.id)} className="decision-modal"><header><small>MEMLEKETOS · KARAR</small><button onClick={()=>setDismissedDecision(pending.id)}>Uygulamalara dön</button></header><DecisionView game={game} decision={pending}/></Sheet>}
+      {pending && <Sheet label={`Yanıt bekleyen karar: ${pending.title}`} onClose={()=>undefined} className="decision-modal decision-modal-blocking"><header><small>MEMLEKETOS · YANIT BEKLİYOR</small></header><DecisionView game={game} decision={pending}/></Sheet>}
       {s.notice && (
         <div role="status" className="toast success">
           {s.notice}

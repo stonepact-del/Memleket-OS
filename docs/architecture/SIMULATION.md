@@ -13,6 +13,7 @@ This document separates facts present on the current branch from intended archit
 - Every balance change goes through `postLedger` as safe-integer kuruş. Validation reconciles each running balance and the final balance; older entries roll into a bounded ledger archive without losing their net value.
 - Apps read one `State` object through the store. Decisions and consequences project into the relevant school, career, calendar, mail, notifications, bank, marketplace, chat, feed, map, and archive surfaces.
 - Close NPCs age and change occupation and life stage on a deterministic monthly cadence. Contact, invitations, posts, memories, availability, relationship drift, and death persist on the same identities; distant population remains an aggregate.
+- The deterministic Narrative Event Director evaluates authored local event data on a paced weekly cadence. It persists bounded history and chain context in v5 life state, selects eligible NPCs with the saved RNG stream, and schedules hidden exactly-once chain follow-ups through the existing scheduler and decision engine.
 - Potentially growing event, decision, ledger, message, post, comment, news, mail, notification, assessment, market-history, memory, and routine-journal collections have explicit retention bounds.
 - IndexedDB remains behind `SaveRepository`. Store mutations validate a cloned state and ordered autosave snapshots prevent an older write from replacing a newer life.
 

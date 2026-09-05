@@ -9,7 +9,7 @@
 .decision-options button span,.decision-options button em {font-size:13px;line-height:1.4;font-style:normal;}
 .decision-options button small,.unavailable-reason {color:#726447;font-size:12px;}
 .decision-options button:disabled {opacity:.55;cursor:not-allowed;}
-.decision-modal {width:min(600px,100%);max-height:92dvh;overflow:auto;border-radius:22px 22px 0 0;background:#fcf7e9;color:#24392f;padding:14px 10px max(20px,env(safe-area-inset-bottom));}
+.decision-modal {width:min(600px,100%);max-height:92dvh;overflow:auto;overscroll-behavior:contain;margin-bottom:1px;border-radius:22px 22px 0 0;background:#fcf7e9;color:#24392f;padding:14px 10px max(20px,env(safe-area-inset-bottom));}
 .decision-modal>header {display:flex;justify-content:space-between;align-items:center;padding:0 14px;}
 .decision-modal>header button {border:0;background:none;min-height:44px;color:inherit;}
 .decision-modal .life-decision {border:0;}

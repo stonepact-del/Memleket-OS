@@ -122,7 +122,7 @@ async function createLife(page:import('@playwright/test').Page) {
   await page.getByRole('button',{name:'Telefonun kilidini aç'}).click();
   await expect(page.locator('.phone-home')).toBeVisible();
 }
-async function goHome(page:import('@playwright/test').Page){const back=page.getByRole('button',{name:'Ana ekrana dön'});if(await back.isVisible())await back.click();else await page.getByRole('button',{name:'Ana Ekran',exact:true}).click();}
+async function goHome(page:import('@playwright/test').Page){if(await page.locator('.phone-home').isVisible())return;const back=page.getByRole('button',{name:'Ana ekrana dön'});if(await back.isVisible())await back.click();else await page.getByRole('button',{name:'Ana ekran',exact:true}).click();}
 
 test('new life, phone action, time, notification and reload',async({page})=>{
   await createLife(page);
@@ -187,9 +187,9 @@ test('marketplace inline offer, inspection and purchase persist',async({page})=>
 });
 
 test('career interview, offer and first employment loop',async({page})=>{
-  await createLife(page);await page.locator('.app-grid > button').filter({hasText:'Kariyer'}).click();await page.getByRole('button',{name:/ilanını aç/}).first().click();await page.getByRole('button',{name:'Başvur'}).click();await goHome(page);
-  await page.getByRole('button',{name:'Akışı yönet'}).click();await page.getByRole('button',{name:/4 gün/}).click();await page.locator('.app-grid > button').filter({hasText:'Takvim'}).click();await page.getByText(/görüşmesi/).click();await page.getByRole('button',{name:'Hazırlığını örneklerle anlat'}).click();
-  await goHome(page);await page.getByRole('button',{name:'Akışı yönet'}).click();await page.getByRole('button',{name:/4 gün/}).click();await page.locator('.app-grid > button').filter({hasText:'Kariyer'}).click();await page.getByRole('button',{name:'Teklifi kabul et'}).click();
+  await page.setViewportSize({width:320,height:568});await createLife(page);await page.locator('.app-grid > button').filter({hasText:'Kariyer'}).click();await page.getByRole('button',{name:/ilanını aç/}).first().click();await page.getByRole('button',{name:'Başvur'}).click();await goHome(page);
+  await page.getByRole('button',{name:'Akışı yönet'}).click();await page.getByRole('button',{name:/4 gün/}).click();await expect(page.getByRole('dialog',{name:/Yanıt bekleyen karar: .*görüşmesi/})).toBeVisible();await page.getByRole('button',{name:'Hazırlığını örneklerle anlat'}).click();
+  await goHome(page);await page.getByRole('button',{name:'Akışı yönet'}).click();await page.getByRole('button',{name:/4 gün/}).click();await expect(page.getByRole('dialog',{name:/Yanıt bekleyen karar: İş teklifi/})).toBeVisible();await page.getByRole('button',{name:'Teklifi kabul et'}).click();
   await goHome(page);await page.locator('.app-grid > button').filter({hasText:'Harita'}).click();await expect(page.getByText('Kafe')).toBeVisible();
 });
 
