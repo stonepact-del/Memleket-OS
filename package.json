@@ -9,7 +9,10 @@
     "typecheck": "tsc -b --pretty false",
     "test": "vitest run",
     "lint": "eslint .",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "preview:check": "wrangler deploy --config wrangler.jsonc --dry-run",
+    "preview:deploy": "wrangler deploy --config wrangler.jsonc --name memleket-os-astra-preview",
+    "preview:local": "wrangler dev --config wrangler.jsonc"
   },
   "dependencies": {
     "@vitejs/plugin-react": "6.1.1",
@@ -36,6 +39,7 @@
     "jsdom": "30.0.1",
     "typescript": "6.0.3",
     "typescript-eslint": "8.69.0",
-    "vitest": "4.1.11"
+    "vitest": "4.1.11",
+    "wrangler": "4.129.0"
   }
 }

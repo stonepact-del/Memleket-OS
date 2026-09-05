@@ -1,5 +1,6 @@
+import { initialLife, setupLife } from '../core/lifeSetup';
 import Dexie, { type EntityTable } from 'dexie';
-import { saveSchema, type State } from '../core/model';
+import { saveSchema, saveSchemaV4, type State } from '../core/model';
 
 export interface SaveSummary { id:string; name:string; province:string; updatedAt:string }
 export interface SaveRepository { list():Promise<SaveSummary[]>; save(s:State):Promise<void>; load(id:string):Promise<State>; delete(id:string):Promise<void>; export(id:string):Promise<string>; import(raw:string):Promise<State> }
@@ -55,6 +56,13 @@ export function validateAndMigrate(value:unknown):State {
     for(const [i,a] of (applications as unknown[]).entries()){if(!a||typeof a!=='object'||Array.isArray(a))fail(`applications.${i}`);(a as Record<string,unknown>).statusUnread=false;}
     if(migrated.employment!==undefined){if(!migrated.employment||typeof migrated.employment!=='object'||Array.isArray(migrated.employment))fail('employment');const e=migrated.employment as Record<string,unknown>;const started=e.startedAt;if(typeof started!=='string')fail('employment.startedAt');const startedMs=Date.parse(started as string);if(!Number.isFinite(startedMs))fail('employment.startedAt');e.nextPayAt=new Date(startedMs+30*864e5).toISOString();}
     migrated.schemaVersion=4;
+  }
+  if (migrated.schemaVersion === 4) {
+    const legacy=saveSchemaV4.safeParse(migrated);
+    if(!legacy.success)throw Error(`Kayıt doğrulanamadı; dosya silinmedi: ${legacy.error.issues[0]?.path.join('.')}`);
+    const upgraded={...legacy.data,schemaVersion:5,simulationVersion:'2.0.0',life:initialLife(legacy.data.now,legacy.data.npcs)} as State;
+    setupLife(upgraded,true);
+    return saveSchema.parse(upgraded);
   }
   const parsed=saveSchema.safeParse(migrated);
   if (!parsed.success) {const issue=parsed.error.issues[0],path=issue?.path.length?`${issue.path.join('.')}: `:'';throw Error(`Kayıt doğrulanamadı; dosya silinmedi: ${path}${issue?.message??'bilinmeyen hata'}`);}

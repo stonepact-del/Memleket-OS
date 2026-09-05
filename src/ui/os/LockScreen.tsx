@@ -1,3 +1,4 @@
+import { nextImportantEvent } from '../../core/actions';
 import { useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { ChevronUp, LockKeyhole } from "lucide-react";
 import type { State } from "../../core/model";
@@ -21,9 +22,7 @@ export function LockScreen({
   const dragDistanceRef = useRef(0);
   const startY = useRef<number | null>(null);
   const activePointer = useRef<number | null>(null);
-  const next = game.events
-    .filter((event) => !event.processed)
-    .sort((a, b) => a.at.localeCompare(b.at))[0];
+  const next = nextImportantEvent(game);
   const ready = dragDistance >= UNLOCK_THRESHOLD;
 
   const startDrag = (event: PointerEvent<HTMLElement>) => {

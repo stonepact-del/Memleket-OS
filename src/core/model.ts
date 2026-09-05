@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { lifeSchema, type LifeState } from './lifeModel';
 
 export type Money = number;
 export type AppId = 'home' | 'archive' | 'school' | 'career' | 'bank' | 'market' | 'chat' | 'feed' | 'mail' | 'news' | 'stocks' | 'calendar' | 'map' | 'notes' | 'settings';
@@ -15,7 +16,7 @@ export interface Application { id:string; jobId:string; state:'submitted'|'viewe
 export interface FeedComment { id:string; authorId:string; at:string; text:string }
 export interface NewsItem { id:string; at:string; category:string; title:string; body:string; companyId?:string }
 export interface Message { id:string; npcId:string; at:string; text:string; fromPlayer:boolean; read:boolean }
-export interface State { schemaVersion:4; simulationVersion:string; worldSeed:number; characterSeed:number; rngState:number; id:string; createdAt:string; updatedAt:string; now:string; speed:0|1|4|12; player:{name:string; birthDate:string; province:string; district:string; traits:Traits; energy:number; stress:number; mood:number; health:number; social:number}; household:{memberIds:string[]; income:Money; expenses:Money; savings:Money; socioeconomic:string; housing:{kind:string; province:string; district:string; rent:Money; size:number; quality:number; commute:number; costs:Money}}; npcs:NPC[]; balance:Money; ledger:Ledger[]; events:GameEvent[]; notifications:Notification[]; archive:{at:string; category:string; text:string}[]; education:{stage:'highSchool'|'yks'|'university'|'graduated'; school:string; grade:number; knowledge:Record<string,number>; attendance:number; consistency:number; mockScores:number[]; gpa:number; credits:number; program?:string}; companies:Company[]; jobs:Job[]; applications:Application[]; employment?:{jobId:string; performance:number; startedAt:string; nextPayAt:string}; listings:Listing[]; vehicles:{listingId:string; title:string; value:Money; condition:number}[]; messages:Message[]; posts:{id:string; npcId:string; at:string; text:string; likes:number; liked:boolean; comments:FeedComment[]}[]; mails:{id:string; at:string; sender:string; subject:string; body:string; read:boolean; app?:AppId}[]; news:NewsItem[]; location:string; holdings:Record<string,{quantity:number; cost:Money}>; notes:string; settings:{sound:boolean; reducedMotion:boolean; largeText:boolean; wallpaper:'city'|'coast'|'simple'}; processedEventIds:string[] }
+export interface State { schemaVersion:5; life:LifeState; simulationVersion:string; worldSeed:number; characterSeed:number; rngState:number; id:string; createdAt:string; updatedAt:string; now:string; speed:0|1|4|12; player:{name:string; birthDate:string; province:string; district:string; traits:Traits; energy:number; stress:number; mood:number; health:number; social:number}; household:{memberIds:string[]; income:Money; expenses:Money; savings:Money; socioeconomic:string; housing:{kind:string; province:string; district:string; rent:Money; size:number; quality:number; commute:number; costs:Money}}; npcs:NPC[]; balance:Money; ledger:Ledger[]; events:GameEvent[]; notifications:Notification[]; archive:{at:string; category:string; text:string}[]; education:{stage:'highSchool'|'yks'|'university'|'graduated'; school:string; grade:number; knowledge:Record<string,number>; attendance:number; consistency:number; mockScores:number[]; gpa:number; credits:number; program?:string}; companies:Company[]; jobs:Job[]; applications:Application[]; employment?:{jobId:string; performance:number; startedAt:string; nextPayAt:string}; listings:Listing[]; vehicles:{listingId:string; title:string; value:Money; condition:number}[]; messages:Message[]; posts:{id:string; npcId:string; at:string; text:string; likes:number; liked:boolean; comments:FeedComment[]}[]; mails:{id:string; at:string; sender:string; subject:string; body:string; read:boolean; app?:AppId}[]; news:NewsItem[]; location:string; holdings:Record<string,{quantity:number; cost:Money}>; notes:string; settings:{sound:boolean; reducedMotion:boolean; largeText:boolean; wallpaper:'city'|'coast'|'simple'}; processedEventIds:string[] }
 
 const text = z.string();
 const id = z.string().min(1);
@@ -37,7 +38,7 @@ const jobSchema = z.strictObject({ id, companyId:id, position:text, city:text, s
 const applicationSchema = z.strictObject({ id, jobId:id, state:z.enum(['submitted','viewed','rejection','no response','interview','later stage','offer','accepted','declined','withdrawn']), updatedAt:timestamp, interviewAt:timestamp.optional(), statusUnread:z.boolean() });
 const messageSchema = z.strictObject({ id, npcId:id, at:timestamp, text, fromPlayer:z.boolean(), read:z.boolean() });
 
-export const saveSchema: z.ZodType<State> = z.strictObject({
+export const saveSchemaV4 = z.strictObject({
   schemaVersion:z.literal(4), simulationVersion:z.string().min(1), worldSeed:integer.nonnegative(), characterSeed:integer.nonnegative(), rngState:integer.nonnegative(), id, createdAt:timestamp, updatedAt:timestamp, now:timestamp, speed:z.union([z.literal(0),z.literal(1),z.literal(4),z.literal(12)]),
   player:z.strictObject({ name:text, birthDate:timestamp, province:text, district:text, traits:traitsSchema, energy:metric, stress:metric, mood:metric, health:metric, social:metric }),
   household:z.strictObject({ memberIds:z.array(id), income:money, expenses:money, savings:money, socioeconomic:text, housing:z.strictObject({ kind:text, province:text, district:text, rent:money, size:finite.nonnegative(), quality:metric, commute:finite.nonnegative(), costs:money }) }),
@@ -50,3 +51,24 @@ export const saveSchema: z.ZodType<State> = z.strictObject({
 });
 
 export function assertMoney(n:number) { if (!Number.isSafeInteger(n)) throw new Error('Güvenli para sınırı aşıldı'); }
+
+export const saveSchema: z.ZodType<State> = saveSchemaV4.extend({schemaVersion:z.literal(5),life:lifeSchema}).superRefine((s,ctx)=>{
+  for(const [name, items] of [['events',s.events],['ledger',s.ledger],['decisions',s.life.decisions]] as const) {
+    if(new Set(items.map(e=>e.id)).size!==items.length) ctx.addIssue({code:'custom',message:'Tekrarlanan kimlik',path:[name]});
+  }
+  const processed=s.events.filter(e=>e.processed).map(e=>e.id);
+  if(new Set(s.processedEventIds).size!==s.processedEventIds.length||processed.some(id=>!s.processedEventIds.includes(id))) ctx.addIssue({code:'custom',message:'Olay günlüğü tutarsız',path:['processedEventIds']});
+  for(const d of s.life.decisions.filter(d=>d.status==='pending'&&d.blocking)) {
+    if(!s.events.some(e=>e.id===d.id&&!e.processed&&e.requiresInput))ctx.addIssue({code:'custom',message:'Kararın takvim kaydı eksik',path:['life','decisions']});
+  }
+  let runningBalance=s.life.ledgerArchive.net;
+  for(const [index,transaction] of [...s.ledger].reverse().entries()) {
+    runningBalance+=transaction.amount;
+    if(!Number.isSafeInteger(runningBalance)||transaction.balanceAfter!==runningBalance) {
+      ctx.addIssue({code:'custom',message:'İşlem bakiyesi tutarsız',path:['ledger',s.ledger.length-index-1,'balanceAfter']});
+      break;
+    }
+  }
+  if(runningBalance!==s.balance)ctx.addIssue({code:'custom',message:'Bakiye işlem geçmişiyle uyuşmuyor',path:['balance']});
+  if(s.employment&&!s.jobs.some(j=>j.id===s.employment!.jobId))ctx.addIssue({code:'custom',message:'İş bulunamadı',path:['employment']});
+});

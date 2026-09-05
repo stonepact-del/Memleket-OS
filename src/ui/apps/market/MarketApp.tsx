@@ -1,3 +1,5 @@
+import { ActionButton, AppDecisions } from '../../life/LifeControls';
+import { money } from '../../format';
 import { Search } from "lucide-react";
 import { useState } from "react";
 import type { State } from "../../../core/model";
@@ -61,6 +63,7 @@ export function MarketApp({ game }: { game: State }) {
           </button>
         ))}
       </nav>
+      <section className="life-section"><h2>Yaşadığın yer</h2><p>{game.household.housing.kind} · {game.household.housing.commute} dk yol · Aylık kira {money(game.household.housing.kind==='Aileyle'?0:game.household.housing.rent)}</p><ActionButton game={game} id="housing"/>{game.vehicles.length>0&&<><h2>Aracın</h2><p>{game.vehicles[0].title} · %{Math.round(game.vehicles[0].condition)} kondisyon</p><div className="life-actions"><ActionButton game={game} id="vehicle-maintenance"/><ActionButton game={game} id="vehicle-sell"/></div></>}</section><AppDecisions game={game} source="market"/>
       <ListingGrid
         listings={shown}
         onOpen={setSelected}

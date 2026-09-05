@@ -1,3 +1,6 @@
+import { pendingDecision } from '../../core/actions';
+import { DecisionView } from '../life/LifeControls';
+import { Sheet } from '../components/Sheet';
 import { useEffect, useState } from "react";
 import type { AppId, State } from "../../core/model";
 import { useGame } from "../../store";
@@ -47,6 +50,7 @@ function DesktopRail() {
             key={a}
             onClick={() => s.open(a)}
             title={appNames[a]}
+            aria-label={appNames[a]}
           >
             <AppIcon app={a} size="small" />
             <span>{appNames[a]}</span>
@@ -83,7 +87,8 @@ export function Device() {
     game = s.game!,
     [locked, setLocked] = useState(true),
     [center, setCenter] = useState(false),
-    [timeOpen, setTimeOpen] = useState(false);
+    [timeOpen, setTimeOpen] = useState(false), [dismissedDecision,setDismissedDecision]=useState<string>();
+  const pending=pendingDecision(game);
   useEffect(() => {
     if (!s.notice) return;
     const t = setTimeout(() => useGame.setState({ notice: undefined }), 2600);
@@ -106,6 +111,7 @@ export function Device() {
         <NotificationCenter game={game} close={() => setCenter(false)} />
       )}{" "}
       {timeOpen && <TimeSheet game={game} close={() => setTimeOpen(false)} />}{" "}
+      {pending && !['interview','offer'].includes(pending.type) && pending.id!==dismissedDecision && !timeOpen && <Sheet label="Hayat kararı" onClose={()=>setDismissedDecision(pending.id)} className="decision-modal"><header><small>MEMLEKETOS · KARAR</small><button onClick={()=>setDismissedDecision(pending.id)}>Uygulamalara dön</button></header><DecisionView game={game} decision={pending}/></Sheet>}
       {s.notice && (
         <div role="status" className="toast success">
           {s.notice}

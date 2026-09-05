@@ -23,7 +23,7 @@ export function BankOverview({ game }: { game: State }) {
       .filter((x) => x.amount < 0)
       .reduce((a, x) => a + x.amount, 0),
     upcoming = game.events
-      .filter((e) => !e.processed && (e.type === "bill" || e.type === "salary"))
+      .filter((e) => !e.processed && (["bill","salary","life-month"].includes(e.type)))
       .sort((a, b) => a.at.localeCompare(b.at))[0],
     job =
       game.employment && game.jobs.find((j) => j.id === game.employment?.jobId),
@@ -55,7 +55,7 @@ export function BankOverview({ game }: { game: State }) {
         </div>
         <small>KULLANILABİLİR BAKİYE</small>
         <h1>{money(game.balance)}</h1>
-        <p>{job ? `${job.position} geliri` : "Aile harçlığı hesabı"}</p>
+        <p>{job ? `${job.position} geliri` : game.life.status==="retired"?"Kurgusal emeklilik geliri":game.life.route==="working"?"Kişisel yaşam hesabı":"Aile harçlığı hesabı"}</p>
         <svg
           viewBox="0 0 300 84"
           role="img"

@@ -6,3 +6,7 @@ playwright-report/
 *.log
 
 *.tsbuildinfo
+
+.wrangler/
+.dev.vars*
+.env*

@@ -11,7 +11,7 @@ export function SubjectList({ knowledge, onStudy }: { knowledge: Record<string, 
   return <section className="subject-section" aria-labelledby="subjects-heading"><div className="school-section-title"><h2 id="subjects-heading">Dersler</h2><span>{Object.keys(knowledge).length} ders</span></div>
     <ul>{Object.entries(knowledge).map(([name, value]) => <li key={name}>
       <span className="subject-glyph" aria-hidden="true">{glyph(name)}</span>
-      <div className="subject-progress"><div><b>{name}</b><span>%{value}</span></div><progress aria-label={`${name} ilerlemesi`} value={value} max="100" /></div>
+      <div className="subject-progress"><div><b>{name}</b><span>%{Math.round(value)}</span></div><progress aria-label={`${name} ilerlemesi`} value={value} max="100" /></div>
       <button onClick={() => onStudy(name)} aria-label={`${name} çalış`}>Çalış</button>
     </li>)}</ul>
   </section>;

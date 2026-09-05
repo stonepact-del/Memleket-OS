@@ -1,3 +1,4 @@
+import { DecisionView } from '../../life/LifeControls';
 import { useEffect, useState } from "react";
 import type { State } from "../../../core/model";
 import { AppShell } from "../../os/AppShell";
@@ -17,6 +18,7 @@ export function CareerApp({ game }: { game: State }) {
   }, []);
   return <AppShell title="Kariyer" variant="hidden"><main className="career-app" data-app-identity="career-native">
     <header className="career-header"><button aria-label="Ana ekrana dön" onClick={() => useGame.getState().open("home")}>‹</button><div><small>{game.employment ? "ÇALIŞMA ALANI" : "FIRSATLAR"}</small><h1>Kariyer</h1></div><span>{game.applications.length}<small>başvuru</small></span></header>
+    <>{game.life.decisions.filter(d=>d.status==="pending"&&d.source==="career"&&!["interview","offer"].includes(d.type)).map(d=><DecisionView game={game} decision={d} key={d.id}/>)}</>
     {job ? <JobDetail game={game} job={job} onBack={() => setSelected(undefined)} /> : <div className="career-layout">
       <div>{game.employment ? <EmploymentView game={game} /> : <JobDiscovery game={game} onOpen={setSelected} />}</div>
       <ApplicationTracker game={game} onOpenJob={setSelected} />

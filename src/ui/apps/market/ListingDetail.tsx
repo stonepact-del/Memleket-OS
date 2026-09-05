@@ -92,8 +92,8 @@ export function ListingDetail({
             Karşı teklifi kabul et ({money(n.counterOffer)})
           </button>
         )}
-        <button className="market-buy" onClick={() => s.buy(listing.id)}>
-          {n?.agreedPrice
+        <button className="market-buy" disabled={listing.status!=="active"||s.game?.life.status==="ended"} onClick={() => s.buy(listing.id)}>
+          {listing.status==="sold"?"Satın alındı":n?.agreedPrice
             ? "Anlaşılan fiyata satın al"
             : "İstenen fiyata satın al"}
         </button>

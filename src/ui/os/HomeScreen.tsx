@@ -1,3 +1,5 @@
+import { lifeContext, nextImportantEvent, pendingDecision } from '../../core/actions';
+import { age } from '../../core/primitives';
 import {
   BatteryMedium,
   ChevronRight,
@@ -20,9 +22,7 @@ export function HomeScreen({
   openTime: () => void;
 }) {
   const s = useGame(),
-    next = game.events
-      .filter((e) => !e.processed)
-      .sort((a, b) => a.at.localeCompare(b.at))[0],
+    next = nextImportantEvent(game),
     apps = (Object.keys(appNames) as AppId[]).filter(
       (a) => a !== "home" && !dock.includes(a),
     ),
@@ -72,7 +72,7 @@ export function HomeScreen({
         </div>
         <strong>Merhaba, {game.player.name.split(" ")[0]}.</strong>
         <span>
-          <MapPin /> {game.player.province} · {game.location}
+          <MapPin /> {age(game)} yaş · {game.player.province} · {game.location}
         </span>
       </header>
       <section className="life-ribbon" aria-label="Günlük durum">
@@ -80,14 +80,14 @@ export function HomeScreen({
           <Sparkles />
           <span>
             <small>RUH HALİ</small>
-            <b>%{game.player.mood}</b>
+            <b>%{Math.round(game.player.mood)}</b>
           </span>
         </div>
         <div>
           <BatteryMedium />
           <span>
             <small>ENERJİ</small>
-            <b>%{game.player.energy}</b>
+            <b>%{Math.round(game.player.energy)}</b>
           </span>
         </div>
         <i
@@ -114,8 +114,7 @@ export function HomeScreen({
           <small>SIRADAKİ</small>
           <b>{next?.title || "Bugün sakin"}</b>
           <span>
-            {next ? date(next.at) : "Planlı olay yok"} · {game.education.grade}.
-            sınıf
+            {next ? date(next.at) : "Planlı olay yok"} · {lifeContext(game)}
           </span>
         </button>
         <aside>
@@ -133,7 +132,7 @@ export function HomeScreen({
         <Clock3 />
         <span>
           <small>ZAMAN</small>
-          <b>Akışı yönet</b>
+          <b>{pendingDecision(game)?"Kararın bekleniyor":"Akışı yönet"}</b>
         </span>
         <ChevronRight />
       </button>

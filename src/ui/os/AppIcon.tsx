@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import { useGame } from '../../store';
+import type { CSSProperties, ReactNode } from "react";
 import type { AppId } from "../../core/model";
 import { appTone } from "../appMeta";
 
@@ -115,8 +116,10 @@ export function AppIcon({
   app: AppId;
   size?: "small" | "regular";
 }) {
+  const now=useGame(s=>s.game?.now);
   return (
     <span
+      style={app==="calendar"?{"--calendar-day": `"${now?.slice(8,10)??""}"`} as CSSProperties:undefined}
       className={`authored-icon icon-${app} tone-${appTone[app]} ${size === "small" ? "is-small" : ""}`}
       aria-hidden="true"
     >

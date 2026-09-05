@@ -5,15 +5,16 @@ This document separates facts present on the current branch from intended archit
 ## CURRENTLY IMPLEMENTED
 
 - `src/core` is a platform-neutral TypeScript simulation with seeded `RNG`; life generation and tested outcomes are reproducible from seeds.
-- `State` stores world/character seeds, RNG state, ISO simulation time, schema/simulation versions, shared data for all current apps, events, and processed event IDs.
-- Time changes through `advanceTo`/`advanceMinutes`; study and travel use this scheduler rather than wall-clock time.
-- Due events are ordered by timestamp. Processed events are marked and journaled. An unresolved `requiresInput` event stops advancement at its timestamp.
-- Event effects currently cover exams, a scheduled bill, job-application progression, salary, and an economy update. Applications can create a blocking interview decision.
-- Financial mutation for bills, purchases, transport, salary, and trades goes through `postLedger`; money validation requires safe integers.
-- Apps read one `State` object through the store. School, career, calendar, mail, notifications, bank, marketplace, social, travel, and market interactions have some cross-app effects.
-- Close/relevant/distant NPC labels exist, while current generated NPCs are individual objects with bounded relationship memories. There is no population-scale simulation.
-- NPC memories are capped at 20, post comments at 12, and company price histories at 24. Other collections are not uniformly bounded.
-- Actions are functions but are not yet represented by a unified data-driven action definition/registry.
+- Version 5 `State` stores world/character seeds, RNG state, ISO simulation time, schema/simulation versions, a versioned fictional Türkiye ruleset, explicit life/decision state, shared app data, events, and processed event IDs. Versions 1–4 migrate in order and validate before use.
+- Time changes through `advanceTo`/`advanceMinutes`. Study, travel, routines, work, decision durations, and registered actions use the same scheduler rather than wall-clock time.
+- Due events are ordered by timestamp and processed once. An unresolved blocking decision stops advancement at its timestamp and remains blocking after save/reload.
+- The calendar-driven lifecycle covers high school, fictional YKS preparation and results, university or vocational alternatives, courses and credits, internships, work and payroll, housing, recurring personal finances, relationships, retirement, and natural story closure. Failure opens a recoverable path.
+- `actions.ts` provides action definitions with prerequisites, duration, costs, cooldowns, and effects. Timed actions apply only after their duration completes and restore their prior state if a due expense makes completion invalid.
+- Every balance change goes through `postLedger` as safe-integer kuruş. Validation reconciles each running balance and the final balance; older entries roll into a bounded ledger archive without losing their net value.
+- Apps read one `State` object through the store. Decisions and consequences project into the relevant school, career, calendar, mail, notifications, bank, marketplace, chat, feed, map, and archive surfaces.
+- Close NPCs age and change occupation and life stage on a deterministic monthly cadence. Contact, invitations, posts, memories, availability, relationship drift, and death persist on the same identities; distant population remains an aggregate.
+- Potentially growing event, decision, ledger, message, post, comment, news, mail, notification, assessment, market-history, memory, and routine-journal collections have explicit retention bounds.
+- IndexedDB remains behind `SaveRepository`. Store mutations validate a cloned state and ordered autosave snapshots prevent an older write from replacing a newer life.
 
 ## Invariants for current and future work
 

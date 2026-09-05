@@ -1,3 +1,5 @@
+import { ActionButton, DecisionView } from '../../life/LifeControls';
+import { useGame } from '../../../store';
 import { Info, Send } from "lucide-react";
 import { useState } from "react";
 import type { Message, NPC } from "../../../core/model";
@@ -31,6 +33,7 @@ export function Conversation({
   onSend: (text: string) => void;
   onBack: () => void;
 }) {
+  const game=useGame(s=>s.game)!;
   const [text, setText] = useState(""),
     [info, setInfo] = useState(false);
   return (
@@ -54,7 +57,7 @@ export function Conversation({
       </header>
       {info && (
         <aside className="contact-context">
-          <strong>{relationshipLabel(npc)}</strong>
+          <strong>{relationshipLabel(npc)}</strong><span>{npc.age} yaş · {npc.occupation} · {npc.lifeStage}</span><ActionButton game={game} id="social" target={npc.id}/>
           <span>
             {npc.relationship.tension > 45
               ? "Biraz mesafeli görünüyorsunuz."
@@ -64,7 +67,7 @@ export function Conversation({
           </span>
         </aside>
       )}
-      <div className="bubbles" aria-live="polite">
+      <div className="bubbles" aria-live="polite">{game.life.decisions.filter(d=>d.status==="pending"&&d.source==="chat"&&d.relatedEntities.includes(npc.id)).map(d=><DecisionView key={d.id} game={game} decision={d}/>)}
         {messages.length === 0 && (
           <p className="chat-empty">Henüz konuşma yok.</p>
         )}
@@ -98,6 +101,7 @@ export function Conversation({
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Bir mesaj yaz…"
+            maxLength={2000}
           />
         </label>
         <button aria-label="Gönder">

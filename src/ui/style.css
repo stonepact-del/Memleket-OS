@@ -12,3 +12,5 @@
 @import "./apps/notes/notes.css";
 @import "./apps/settings/settings.css";
 @import "./apps/archive/archive.css";
+
+@import "./life/life.css";
